@@ -7,16 +7,11 @@
 -- Il riferimento e' data_creazione, valorizzata per ogni tracciato: anche
 -- quelli mai completati, dopo la retention, non servono piu'.
 --
--- Il contenuto del tracciato e' un large object, che lo_unlink cancella:
--- nell'archivio e' copiato nella colonna aggiuntiva raw_contenuto_dati.
+-- Il contenuto del tracciato e' un large object, che lo_unlink cancella prima
+-- della riga che lo referenzia.
 --
--- Prima di essere cancellate, le righe vengono copiate nella tabella di
--- archivio trac_notif_pag_aaaammgg, creata se non esiste e riempita nella
--- stessa transazione della cancellazione: l'archivio contiene esattamente le
--- righe cancellate. svecchiamento-db.sh sostituisce aaaammgg con la data
--- dell'esecuzione; eseguito da solo, lo script archivia nella tabella
--- trac_notif_pag_aaaammgg. Salvare ed eliminare la tabella di archivio e'
--- compito del DBA.
+-- Nessun archivio: i tracciati di notifica sono copie di quanto gia' inviato
+-- all'ente, e vengono cancellati senza copia.
 --
 -- Uso: psql -v ON_ERROR_STOP=1 -h <host> -U <utente> -d <database> -f tracciati_notifica_pagamenti.sql
 --
@@ -32,16 +27,10 @@
 \echo '--- Svecchiamento TRACCIATI NOTIFICA PAGAMENTI ---'
 \echo 'Retention: ' :retention_tnp
 
-\echo 'Creazione della tabella di archivio...'
-CREATE TABLE IF NOT EXISTS trac_notif_pag_aaaammgg AS SELECT trac_notif_pag.*, lo_get(trac_notif_pag.raw_contenuto) AS raw_contenuto_dati FROM trac_notif_pag WITH NO DATA;
-
 BEGIN;
 
-\echo 'Archiviazione...'
-INSERT INTO trac_notif_pag_aaaammgg SELECT trac_notif_pag.*, lo_get(trac_notif_pag.raw_contenuto) FROM trac_notif_pag WHERE data_creazione < :end_tnp;
-
 \echo 'Rimozione large objects (raw_contenuto)...'
-SELECT lo_unlink(raw_contenuto) FROM trac_notif_pag WHERE data_creazione < :end_tnp AND raw_contenuto IS NOT NULL;
+SELECT count(lo_unlink(raw_contenuto)) AS raw_contenuto_rimossi FROM trac_notif_pag WHERE data_creazione < :end_tnp AND raw_contenuto IS NOT NULL;
 
 \echo 'Cancellazione...'
 DELETE FROM trac_notif_pag WHERE data_creazione < :end_tnp;

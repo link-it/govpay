@@ -11,14 +11,8 @@
 -- ripetere il criterio in ogni istruzione, a cavallo della mezzanotte,
 -- selezionerebbe tracciati diversi.
 --
--- Prima di essere cancellate, le righe vengono copiate in tabelle di archivio
--- con lo stesso nome e il suffisso _aaaammgg (operazioni, tracciati), create
--- se non esistono, senza vincoli ne' indici, e nella stessa transazione delle
--- cancellazioni: l'archivio contiene esattamente le righe cancellate.
--- svecchiamento-db.sh sostituisce aaaammgg con la data dell'esecuzione;
--- eseguito da solo, lo script archivia nelle tabelle _aaaammgg. Gli eventi non
--- vengono archiviati. Salvare ed eliminare le tabelle di archivio e' compito
--- del DBA.
+-- Nessun archivio: tracciati e operazioni non servono alla riconciliazione, e
+-- vengono cancellati senza copia.
 --
 -- Uso: SqlTool, oppure da applicazione Java
 --
@@ -29,9 +23,6 @@
 -- HSQLDB non ha variabili negli script: la retention e' il letterale
 -- nelle DELETE qui sotto, 30 giorni.
 
-CREATE TABLE IF NOT EXISTS operazioni_aaaammgg AS (SELECT * FROM operazioni) WITH NO DATA;
-CREATE TABLE IF NOT EXISTS tracciati_aaaammgg AS (SELECT * FROM tracciati) WITH NO DATA;
-
 DECLARE LOCAL TEMPORARY TABLE svecchiamento_tracciati (id BIGINT NOT NULL PRIMARY KEY) ON COMMIT PRESERVE ROWS;
 DELETE FROM SESSION.svecchiamento_tracciati;
 
@@ -40,11 +31,7 @@ SELECT id FROM tracciati WHERE data_completamento < CURRENT_DATE - 30 DAY;
 
 DELETE FROM eventi WHERE id_tracciato IN (SELECT id FROM SESSION.svecchiamento_tracciati);
 
-INSERT INTO operazioni_aaaammgg SELECT * FROM operazioni WHERE id_tracciato IN (SELECT id FROM SESSION.svecchiamento_tracciati);
-
 DELETE FROM operazioni WHERE id_tracciato IN (SELECT id FROM SESSION.svecchiamento_tracciati);
-
-INSERT INTO tracciati_aaaammgg SELECT * FROM tracciati WHERE id IN (SELECT id FROM SESSION.svecchiamento_tracciati);
 
 DELETE FROM tracciati WHERE id IN (SELECT id FROM SESSION.svecchiamento_tracciati);
 

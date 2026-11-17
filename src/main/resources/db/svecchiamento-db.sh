@@ -154,7 +154,11 @@ Esecuzione:
                        inferiore a ${RETENTION_MINIMA_GIORNI} giorni.
                        Senza --force, o --dry-run, lo script si rifiuta di
                        procedere, anche con --solo-sql: lo script composto
-                       cancellerebbe quei dati
+                       cancellerebbe quei dati. A parte, e senza deroghe neanche
+                       con --force o --dry-run, la retention di
+                       flussi_rendicontazione e incassi_orfani non puo' essere
+                       inferiore a quella di pendenze_pagate: flussi e incassi
+                       si svecchiano dopo le pendenze pagate che riconciliano
   --finestra <giorni>  Svecchia a passate, dai dati piu' vecchi: la prima passata
                        cancella solo la fascia di <giorni> giorni piu' vecchia di
                        ogni sezione, e ogni passata successiva la successiva, fino
@@ -175,14 +179,22 @@ Esecuzione:
                        accanto a questo script)
   -h, --help           Mostra questo aiuto
 
-Archivio: tutte le sezioni tranne eventi e spring-batch copiano le righe che
-cancellano in tabelle <tabella>_AAAAMMGG, con la data dell'esecuzione, create e
-riempite nella stessa esecuzione della cancellazione. Il backup e' giornaliero:
+Archivio: tutte le sezioni tranne eventi, tracciati, tracciati_notifica_pagamenti
+e spring-batch copiano le righe che cancellano in tabelle <tabella>_AAAAMMGG,
+con la data dell'esecuzione, create e riempite nella stessa esecuzione della
+cancellazione. Il backup e' giornaliero:
 se nel database esiste gia' anche una sola tabella di archivio con il suffisso
 di questa esecuzione, le sezioni con archivio vengono saltate. Il suffisso si
 cambia con --suffisso-archivio. Salvare ed eliminare le tabelle di
 archivio e' compito del DBA. In simulazione le tabelle si chiamano
 <tabella>_simAAAAMMGG e vengono eliminate alla fine.
+
+Large object (solo PostgreSQL): la sezione tracciati rimuove anche i large
+object orfani, quelli che nessuna colonna di GovPay referenzia piu', a ogni
+esecuzione e senza retention. Presuppone un database dedicato a GovPay.
+
+Metadati dei batch: se le tabelle BATCH_* non esistono, la sezione spring-batch
+viene saltata con una nota (non con --solo-sql, che non interroga il database).
 
 Documentazione completa, con requisiti ed esempi: README-svecchiamento.md,
 accanto a questo script.
@@ -483,6 +495,29 @@ for s in "${SEZIONI[@]}"; do
   fi
 done
 
+# ── Flussi e incassi dopo le pendenze pagate ─────────────────────────────────
+# Un flusso di rendicontazione o un incasso non si cancella prima delle pendenze
+# pagate che riconcilia: la loro retention non puo' essere inferiore a quella di
+# pendenze_pagate. Altrimenti flussi_rendicontazione cancellerebbe le pendenze
+# rendicontate prima di quelle mai rendicontate, e un incasso sparirebbe mentre
+# i pagamenti che riconciliava restano. Il confronto e' sulle retention
+# effettive, anche quando pendenze_pagate non e' tra le sezioni eseguite: vale il
+# default scritto nel suo script. Non c'e' deroga, neanche con --force o
+# --dry-run: e' un vincolo di coerenza, non una soglia di prudenza.
+# Imposta RETENTION_EFFETTIVA senza subshell, cosi' che errore() fermi lo script.
+function retention_effettiva() {   # $1 = sezione
+  RETENTION_EFFETTIVA="${RETENTION[$1]:-$(retention_dal_file "${SEZIONI_DIR}/$1.sql" "$(parametro_di "$1")")}"
+  [[ "${RETENTION_EFFETTIVA}" =~ ^[0-9]+$ ]] \
+    || errore "retention di $1 non leggibile da ${SEZIONI_DIR#${REPO_ROOT}/}/$1.sql: lo script e' cambiato, aggiornare $(basename "$0")"
+}
+for s in "${SEZIONI[@]}"; do
+  [[ "${s}" == flussi_rendicontazione || "${s}" == incassi_orfani ]] || continue
+  retention_effettiva "${s}";             giorni="${RETENTION_EFFETTIVA}"
+  retention_effettiva pendenze_pagate;    giorni_pagate="${RETENTION_EFFETTIVA}"
+  [[ "${giorni}" -ge "${giorni_pagate}" ]] \
+    || errore "${s}: retention di ${giorni} giorni, inferiore a quella di pendenze_pagate (${giorni_pagate}). Flussi e incassi si svecchiano dopo le pendenze pagate che riconciliano: indicare --retention-${s} di almeno ${giorni_pagate} giorni"
+done
+
 # ── Connessione ──────────────────────────────────────────────────────────────
 # I parametri di connessione servono per eseguire e per controllare l'archivio di
 # oggi: con --solo-sql non servono, e lo script si compone anche dove non si ha
@@ -637,6 +672,51 @@ if [[ ${#SEZIONI_ARCHIVIO[@]} -gt 0 ]]; then
         exit 0
       fi
       SEZIONI=("${RESTANTI[@]}")
+    fi
+  fi
+fi
+
+# ── Metadati dei batch presenti ──────────────────────────────────────────────
+# Le tabelle BATCH_* di Spring Batch nascono con le versioni di GovPay che usano
+# i batch Spring: su un'installazione piu' vecchia non ci sono, e la sezione
+# spring-batch fallirebbe fermando lo svecchiamento. In quel caso viene saltata.
+# Con --solo-sql non si puo' verificare: lo script composto la contiene.
+function query_tabelle_batch() {   # scrive su stdout lo script del controllo
+  local t="'batch_job_execution'"
+  case "${TIPO_DB}" in
+    postgresql)
+      echo "\\pset tuples_only on"
+      echo "\\pset format unaligned"
+      echo "SELECT 'BATCH_PRESENTI ' || count(*) FROM information_schema.tables WHERE table_schema = current_schema() AND lower(table_name) = ${t};" ;;
+    mysql)
+      echo "SELECT CONCAT('BATCH_PRESENTI ', COUNT(*)) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND LOWER(table_name) = ${t};" ;;
+    oracle)
+      echo "SET HEADING OFF FEEDBACK OFF PAGESIZE 0"
+      echo "SELECT 'BATCH_PRESENTI ' || COUNT(*) FROM user_tables WHERE LOWER(table_name) = ${t};" ;;
+    sqlserver)
+      echo "SET NOCOUNT ON;"
+      echo "SELECT 'BATCH_PRESENTI ' + CAST(COUNT(*) AS VARCHAR(10)) FROM sys.tables WHERE LOWER(name) = ${t};" ;;
+    hsql)
+      echo "SELECT 'BATCH_PRESENTI ' || COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE LOWER(TABLE_NAME) = ${t};" ;;
+  esac
+}
+
+if [[ " ${SEZIONI[*]} " == *" spring-batch "* && "${SOLO_SQL}" != true ]]; then
+  CONTROLLO="${WORKDIR}/_tabelle_batch.sql"
+  query_tabelle_batch > "${CONTROLLO}"
+  esito_controllo="$(esegui "${CONTROLLO}" 2>&1)" \
+    || errore "controllo delle tabelle BATCH_* non riuscito: ${esito_controllo}"
+  presenti="$(grep -oE 'BATCH_PRESENTI [0-9]+' <<< "${esito_controllo}" | tail -1 | grep -oE '[0-9]+' || true)"
+  [[ -n "${presenti}" ]] || errore "controllo delle tabelle BATCH_* senza risposta: ${esito_controllo}"
+  if [[ "${presenti}" -eq 0 ]]; then
+    nota "spring-batch: tabelle BATCH_* assenti nel database, sezione saltata"
+    RESTANTI=()
+    for s in "${SEZIONI[@]}"; do [[ "${s}" == spring-batch ]] || RESTANTI+=("${s}"); done
+    SEZIONI=("${RESTANTI[@]}")
+    if [[ ${#SEZIONI[@]} -eq 0 ]]; then
+      echo
+      echo "Nessuna sezione da eseguire."
+      exit 0
     fi
   fi
 fi

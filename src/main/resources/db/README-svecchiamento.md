@@ -5,8 +5,9 @@ il loro periodo di conservazione. È l'unico strumento di svecchiamento del repo
 
 Due regole:
 
-- **giornale degli eventi e metadati dei batch** si cancellano e basta;
-- **tutto il resto** (tracciati, audit, pendenze, flussi di rendicontazione, incassi, documenti)
+- **giornale degli eventi, caricamenti massivi, tracciati di notifica dei pagamenti e metadati dei
+  batch** si cancellano e basta: non servono alla riconciliazione;
+- **tutto il resto** (audit, pendenze, flussi di rendicontazione, incassi, documenti)
   viene prima copiato in **tabelle di archivio giornaliere** `<tabella>_AAAAMMGG`, da salvare ed
   eliminare a cura del DBA (vedi [Archivio](#archivio)). Il backup è uno al giorno: un secondo lancio
   nello stesso giorno salta le sezioni con archivio.
@@ -59,9 +60,9 @@ retention sono in **giorni**.
 | Sezione | Cosa cancella | Riferimento | Retention di default | Archivio |
 |---|---|---|---|---|
 | `eventi` | Il giornale degli eventi. | `eventi.data` | 30 | no |
-| `tracciati` | I tracciati di caricamento completati, con le loro operazioni e i loro eventi. | `data_completamento` | 30 | sì |
-| `spring-batch` | I metadati delle esecuzioni dei batch (`BATCH_*`). | fine, inizio o creazione dell'esecuzione | 30 | no |
-| `tracciati_notifica_pagamenti` | I tracciati di notifica dei pagamenti (`trac_notif_pag`). | `data_creazione` | 30 | sì |
+| `tracciati` | I tracciati di caricamento completati, con le loro operazioni, i loro eventi e lo zip delle stampe; su PostgreSQL anche i large object orfani. | `data_completamento` | 30 | no |
+| `spring-batch` | I metadati delle esecuzioni dei batch (`BATCH_*`). Saltata se le tabelle non esistono. | fine, inizio o creazione dell'esecuzione | 30 | no |
+| `tracciati_notifica_pagamenti` | I tracciati di notifica dei pagamenti (`trac_notif_pag`). | `data_creazione` | 30 | no |
 | `audit` | L'audit delle operazioni degli operatori (`gp_audit`). | `data` | 365 | sì |
 | `pendenze_scadute_non_pagate` | Le pendenze `NON_ESEGUITO` scadute, senza pagamenti né rendicontazioni, con tutto ciò che le riferisce. | `data_scadenza` | 365 | sì |
 | `pendenze_annullate` | Le pendenze `ANNULLATO`, senza pagamenti né rendicontazioni, con tutto ciò che le riferisce. | `data_ora_ultimo_aggiornamento` | 365 | sì |
@@ -72,6 +73,22 @@ retention sono in **giorni**.
 
 "Tutto ciò che riferisce una pendenza" sono voci, RPT (con l'XML di RPT e RT), pagamenti,
 notifiche, notifiche App IO, promemoria, stampe, operazioni e allegati.
+
+### tracciati
+
+Tracciati, operazioni e zip delle stampe (large object su PostgreSQL) vengono cancellati senza
+archivio. Su PostgreSQL la sezione si chiude rimuovendo i **large object orfani**, quelli che nessuna
+colonna di GovPay referenzia più (`tracciati.zip_stampe`, `allegati.raw_contenuto`,
+`trac_notif_pag.raw_contenuto`), rimasti da cancellazioni fatte senza `lo_unlink`. Non hanno una
+data: vengono rimossi tutti, a ogni esecuzione. GovPay crea il large object e la riga che lo
+referenzia nella stessa transazione, quindi uno in corso di scrittura non è visibile allo
+svecchiamento. La rimozione presuppone che il database sia dedicato a GovPay: un large object di
+un'altra applicazione nello stesso database verrebbe cancellato.
+
+La prima esecuzione su un'installazione con molti orfani può rimuovere decine di GB da
+`pg_largeobject`: non blocca GovPay, ma genera molto I/O e WAL. Lo spazio torna riutilizzabile dopo
+il `VACUUM` di `pg_largeobject`; per restituirlo al sistema operativo serve un `VACUUM FULL`, che
+blocca la tabella.
 
 ### pendenze_scadute_non_pagate
 
@@ -136,13 +153,17 @@ transazione della sua prima pendenza, quindi non è mai visibile orfano mentre n
 
 ### spring-batch
 
+Le tabelle `BATCH_*` esistono solo nelle versioni di GovPay che usano i batch Spring. Prima di
+eseguire, il comando controlla che ci siano: se mancano, la sezione viene saltata con una nota invece
+di fallire. Con `--solo-sql` il controllo non si può fare.
+
 Non c'è filtro sullo stato delle esecuzioni: è una scelta degli script di `govpay-common`, da cui
 la sezione deriva, e serve a bonificare le esecuzioni rimaste appese. Un job ancora in corso,
 creato prima della soglia, verrebbe cancellato.
 
 ## Archivio
 
-Tutte le sezioni tranne `eventi` e `spring-batch` copiano le righe che cancellano in tabelle di
+Tutte le sezioni tranne `eventi`, `tracciati`, `tracciati_notifica_pagamenti` e `spring-batch` copiano le righe che cancellano in tabelle di
 archivio, nello stesso schema, con il nome della tabella d'origine e la data dell'esecuzione:
 
 ```
@@ -151,8 +172,6 @@ versamenti_20261007   rpt_20261007   pagamenti_20261007   fr_20261007   gp_audit
 
 | Sezione | Tabelle archiviate |
 |---|---|
-| `tracciati` | `tracciati`, `operazioni` |
-| `tracciati_notifica_pagamenti` | `trac_notif_pag` |
 | `audit` | `gp_audit` |
 | `pendenze_scadute_non_pagate`, `pendenze_annullate` | `versamenti`, `singoli_versamenti`, `rpt`, `notifiche`, `notifiche_app_io`, `promemoria`, `operazioni`, `stampe`, `allegati` |
 | `flussi_rendicontazione` | `fr`, `rendicontazioni`, `incassi`, `pagamenti` e le tabelle delle pendenze, come sopra |
@@ -160,13 +179,13 @@ versamenti_20261007   rpt_20261007   pagamenti_20261007   fr_20261007   gp_audit
 | `incassi_orfani` | `incassi` |
 | `documenti_orfani` | `documenti` |
 
-La tabella `eventi` non viene archiviata, neanche per gli eventi cancellati insieme a tracciati e
-flussi.
+Non vengono archiviati `eventi` (neanche quelli cancellati insieme a tracciati, flussi e incassi),
+`tracciati`, `operazioni` dei tracciati, `trac_notif_pag` e i metadati dei batch.
 
 - **Un backup al giorno.** Prima di eseguire, il comando controlla se nel database esiste già anche
   una sola tabella di archivio con il suffisso dell'esecuzione, di default la data di oggi. Se c'è,
   lo svecchiamento con archivio è già stato fatto, e **le sezioni con archivio vengono saltate**;
-  `eventi` e `spring-batch` girano comunque. Il controllo vale anche per `--dry-run`; con
+  le sezioni senza archivio girano comunque. Il controllo vale anche per `--dry-run`; con
   `--solo-sql` non si può fare, e il comando lo segnala.
 - **Suffisso personalizzato.** Con `--suffisso-archivio <suffisso>` le tabelle si chiamano
   `<tabella>_<suffisso>` invece di `<tabella>_AAAAMMGG`, e il controllo cerca quel suffisso: per
@@ -181,8 +200,8 @@ flussi.
 - Le righe vengono copiate **nella stessa transazione della cancellazione**, con lo stesso criterio
   delle `DELETE` o sugli stessi id: l'archivio contiene esattamente le righe cancellate. Se la
   sezione fallisce e viene annullata, l'archivio resta come prima.
-- **PostgreSQL:** `allegati.raw_contenuto`, `tracciati.zip_stampe` e `trac_notif_pag.raw_contenuto`
-  sono large object, che la cancellazione elimina. Il loro contenuto viene copiato nella colonna
+- **PostgreSQL:** `allegati.raw_contenuto` è un large object, che la cancellazione elimina. Il suo
+  contenuto viene copiato nella colonna
   aggiuntiva `<colonna>_dati` (`bytea`) dell'archivio; la colonna originale conserva solo l'OID, ormai
   non valido.
 - **Simulazione:** con `--dry-run` le tabelle si chiamano `<tabella>_simAAAAMMGG`, restano vuote
@@ -198,9 +217,9 @@ SELECT table_name FROM information_schema.tables WHERE table_name ~ '_[0-9]{8}$'
 ```
 
 Per ripristinare i dati si reinseriscono le righe nelle tabelle d'origine nell'ordine delle chiavi
-esterne: `documenti`, `incassi`, `fr`, `tracciati`, `versamenti`, `singoli_versamenti`, `rpt`,
-`stampe`, `allegati`, `pagamenti`, `rendicontazioni`, `operazioni`, `notifiche`, `notifiche_app_io`,
-`promemoria`; `trac_notif_pag` e `gp_audit` in qualsiasi momento. Su PostgreSQL i large object
+esterne: `documenti`, `incassi`, `fr`, `versamenti`, `singoli_versamenti`, `rpt`, `stampe`,
+`allegati`, `pagamenti`, `rendicontazioni`, `operazioni`, `notifiche`, `notifiche_app_io`,
+`promemoria`; `gp_audit` in qualsiasi momento. Su PostgreSQL i large object
 vanno ricreati dalla colonna `_dati`, aggiornando l'OID.
 
 ## Opzioni
@@ -237,6 +256,22 @@ Il rifiuto vale anche con `--solo-sql`, perché lo script composto, eseguito, ca
 # ammessi
 ./svecchiamento-db.sh postgresql --sezioni pendenze_pagate --retention-pendenze_pagate 365 --dry-run
 ./svecchiamento-db.sh postgresql --sezioni pendenze_pagate --retention-pendenze_pagate 365 --force
+```
+
+### Flussi e incassi dopo le pendenze pagate
+
+Un flusso di rendicontazione o un incasso non si cancella prima delle pendenze pagate che riconcilia:
+la retention di `flussi_rendicontazione` e quella di `incassi_orfani` non possono essere inferiori a
+quella di `pendenze_pagate`. Il confronto è sulle retention effettive, opzione o default dello script,
+anche quando `pendenze_pagate` non è tra le sezioni eseguite. Non c'è deroga, neanche con `--force` o
+`--dry-run`.
+
+```bash
+# rifiutato: flussi cancellati prima delle pendenze pagate
+./svecchiamento-db.sh postgresql --retention-pendenze_pagate 1095
+# ammesso
+./svecchiamento-db.sh postgresql --retention-pendenze_pagate 1095 \
+    --retention-flussi_rendicontazione 1095 --retention-incassi_orfani 1095
 ```
 
 ### Connessione
