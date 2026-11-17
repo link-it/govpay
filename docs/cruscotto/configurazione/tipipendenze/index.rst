@@ -3,23 +3,24 @@
 Tipi Pendenze
 -------------
 
-Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
+Ogni pendenza gestita dal sistema appartiene a un tipo pendenza censito in questa anagrafica. Il tipo pendenza raccoglie la configurazione comune alle pendenze dello stesso genere: codifica negli IUV, form di inserimento da operatore e di pagamento spontaneo, comunicazioni al cittadino e altre funzioni.
+I tipi pendenza vengono poi associati agli Enti Creditori nella sezione *Tipi Pendenza* del dettaglio dell'ente (vedi :ref:`govpay_configurazione_enti`), dove la configurazione di base definita in questa anagrafica può essere personalizzata per il singolo ente.
 La gestione dei tipi di pendenza permette la generazione di maschere automatiche per l'immissione dei dati, semplificando in modo notevole lo sviluppo di interfacce e ottimizzando i tempi generali di progetto.
-Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
+Le modalità per la creazione di un nuovo tipo pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
 
 .. figure:: ../../_images/24NuovaPendenza.png
    :align: center
    :name: CampiPerNuovaPendenza
 
-   Maschera di creazione di una Nuova Pendenza
+   Maschera di creazione di un nuovo Tipo Pendenza
 
-Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Selezioniamo, ad esempio, la Pendenza *Sanzione Amministrativa*.
+Vediamo come modificare un tipo pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Selezioniamo, ad esempio, il tipo pendenza *Sanzione Amministrativa*.
 
 .. figure:: ../../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
    :name: SelezionePendenza
 
-   Selezione della Pendenza *Sanzione Amministrativa*
+   Selezione del tipo pendenza *Sanzione Amministrativa*
 
 Il sistema mostra la seguente maschera
 
@@ -31,15 +32,16 @@ Il sistema mostra la seguente maschera
 
 Possiamo identificare i seguenti raggruppamenti di informazioni:
 
-* Riepilogo Informazioni
-* Layout form dati
-* Elaborazione
-* Promemoria avviso pagamento
-* Promemoria ricevuta telematica
+* Riepilogo informazioni
+* Inserimento pendenze da operatore
+* Pagamento spontaneo
+* Comunicazioni via email
+* Comunicazioni via App IO
+* Altre funzioni
 
-A ciascuno di essi è dedicata una sezione di dettaglio, come segue.
+Le sezioni diverse dal riepilogo hanno gli stessi campi della configurazione del tipo pendenza associato a un Ente Creditore, descritti nelle pagine dedicate: i valori impostati in questa anagrafica sono i valori di base, che l'ente può sovrascrivere.
 
-Riepilogo Informazioni
+Riepilogo informazioni
 ~~~~~~~~~~~~~~~~~~~~~~
 La sottosezione si presenta nel seguente modo:
 
@@ -54,15 +56,17 @@ La sottosezione si presenta nel seguente modo:
    :widths: 40,40,20
 
    "Descrizione", "Descrizione sintetica del tipo di pendenza", ""
-   "Id Tipo Pendenza", "Codice tecnico che indica in modo univoco la pendenza", "Non modificabile"
-   "Tipologia", "Tipo di pendenza: dovuta o spontanea", ""
+   "Id Tipo Pendenza", "Codice tecnico che indica in modo univoco il tipo pendenza", "Non modificabile"
    "Codifica IUV", "Identificatore della struttura del codice IUV", ""
-   "Abilitato", "Indica se la Sanzione Amministrativa sia abilitata o meno, quindi sia o meno associabile a domini esistenti", ""
-   "Pagabile da terzi", "Indica se la sanzione possa o meno essere pagata non dal debitore", ""
+   "Abilitato", "Indica se il tipo pendenza è abilitato o meno, quindi se è o meno associabile agli Enti Creditori", ""
+   "Pagabile da terzi", "Indica se le pendenze di questo tipo possono essere pagate da un soggetto diverso dal debitore", ""
 
 
-Layout form dati
-~~~~~~~~~~~~~~~~
+Inserimento pendenze da operatore
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La sezione definisce la form con cui un operatore inserisce dalla console le pendenze di questo tipo, la validazione dei dati inseriti,
+la loro trasformazione in una pendenza e l'eventuale inoltro a un'applicazione. I campi sono descritti in :ref:`govpay_configurazione_enti_formoperatore`.
 
 .. figure:: ../../_images/31ModificaFormSanzioneAmministrativa.png
    :align: center
@@ -70,13 +74,8 @@ Layout form dati
 
    Sezione form della *Sanzione Amministrativa*
 
-
-.. csv-table:: Campi modificabili della sezione *Layout Form dati*
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
-
-   "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo *Angular Json schema form*"
-   "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
+Il *Tipo layout* indica il motore di interpretazione della definizione della form: *Angular Json schema form* oppure *SurveyJS*.
+Per i file di definizione, validazione e trasformazione è presente un menu di caricamento e visualizzazione:
 
 .. figure:: ../../_images/32MenuDefinizioneForm.png
    :align: center
@@ -102,82 +101,62 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
 
    Funzionalità selezionabili per la definizione form
 
-Elaborazione
-~~~~~~~~~~~~
-
-La sezione *Elaborazione* consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione `Layout Form Dati`_ al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni (anche esterne) che ne abbisognino. Si pensi a uno scenario in cui, ad esempio, sia necessario informare un sistema di recupero crediti del fatto che una pendenza abbia superato la data di scadenza.
+Le sottosezioni *Validazione*, *Trasformazione dati* e *Inoltro* consentono a GovPay di descrivere in modo formale come elaborare quanto immesso nella form al fine di trasformare e inoltrare le informazioni alle applicazioni (anche esterne) che ne abbisognino.
 
 .. figure:: ../../_images/33SezioneElaborazioneDellaModificaPendenze.png
    :align: center
    :name: SezioneElaborazioneDellaSanzioneAmministrativa
 
-   Funzionalità della sezione *Elaborazione*
+   Validazione, trasformazione e inoltro dei dati della form
 
-
-.. csv-table:: Dettagli della sezione *Elaborazione*
+.. csv-table:: Dettagli di validazione, trasformazione e inoltro
    :header: "Campo", "Significato", "Note"
    :widths: 40,40,20
 
    "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
    * Visualizza
    * Ripristina"
-   "Trasformazione: tipo template", "Motore di trasformazione delle informazioni immesse nel Form Dati", "Freemarker"
-   "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
+   "Trasformazione: tipo template", "Motore di trasformazione delle informazioni immesse nella form", "Freemarker"
+   "Trasformazione: Template", "Template di definizione della trasformazione dati", "* Carica
    * Visualizza
    * Ripristina"
    "Inoltro", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
 
 
-Promemoria Avviso Pagamento
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pagamento spontaneo
+~~~~~~~~~~~~~~~~~~~
 
-La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del debitore dell'avviso di pagamento. La tipologia di definizione del *subject* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
+La sezione definisce la form con cui il cittadino paga spontaneamente le pendenze di questo tipo da un portale dei pagamenti, con la relativa impaginazione, validazione, trasformazione e inoltro. I campi sono descritti in :ref:`govpay_configurazione_enti_spontaneo`.
+
+
+Comunicazioni via email
+~~~~~~~~~~~~~~~~~~~~~~~
+
+La sezione configura le comunicazioni automatiche via email al debitore: notifica dell'avviso di pagamento, promemoria della scadenza e notifica della ricevuta. I campi sono descritti in :ref:`govpay_configurazione_enti_email`. La definizione dell'oggetto e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_.
 
 .. figure:: ../../_images/35EntrataPromemoriaAvvisoDiPagamento.png
    :align: center
    :name: PromemoriaAvvisoDiPagamento
 
-   Informazioni della sezione *Promemoria Avviso Pagamento*
-
-
-.. csv-table:: Dettagli della sezione *Promemoria Avviso Pagamento*
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
-
-   "Tipo template", "Motore di trasformazione delle informazioni immesse nel template *oggetto* e *messaggio* della mail di Avviso Pagamento", "Freemarker"
-   "Template Oggetto", "Template di defizione dell'oggetto della mail di Avviso Pagamento", "* Carica
-   * Visualizza
-   * Ripristina"
-   "Template Messaggio", "Template di defizione del messaggio della mail di Avviso Pagamento", "* Carica
-   * Visualizza
-   * Ripristina"
-   "Allega pdf avviso", "Permette di allegare o meno il pdf dell'avviso di pagamento alla mail di promemoria", ""
-
-
-Promemoria Ricevuta Telematica
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relativa all' *Avviso di pagamento*: essa permette l'inoltro automatico verso la mail del debitore della ricevuta telematica dell'avvenuto pagamento. Anche in questo caso la tipologia di definizione formale del *oggetto* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
+   Informazioni della notifica dell'avviso di pagamento
 
 .. figure:: ../../_images/35EntrataPromemoriaRicevutaTelematica.png
    :align: center
    :name: PromemoriaRicevutaTelematica
 
-   Informazioni della sezione *Promemoria Ricevuta Telematica*
+   Informazioni della notifica della ricevuta
 
 
-.. csv-table:: Dettagli della sezione *Promemoria Ricevuta Telematica*
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+Comunicazioni via App IO
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-   "Tipo template", "Motore di trasformazione delle informazioni immesse nel template *oggetto* e *messaggio* della mail di Ricevuta Telematica", "Freemarker"
-   "Template Oggetto", "Template di defizione dell'oggetto della mail di Ricevuta Telematica", "* Carica
-   * Visualizza
-   * Ripristina"
-   "Template Messaggio", "Template di defizione del messaggio della mail di Ricevuta Telematica", "* Carica
-   * Visualizza
-   * Ripristina"
-   "Allega pdf avviso", "Permette di allegare o meno il pdf della Ricevuta Telematica", ""
+La sezione configura le stesse comunicazioni inviate come messaggi App IO. I campi sono descritti in :ref:`govpay_configurazione_enti_appio`.
+
+
+Altre funzioni
+~~~~~~~~~~~~~~
+
+La sezione configura il parser dei tracciati CSV di caricamento massivo e la personalizzazione del dettaglio della pendenza in console. I campi sono descritti in :ref:`govpay_configurazione_enti_altrefunzioni`.
 
 
 Esempio di scenario di utilizzo
@@ -185,12 +164,12 @@ Esempio di scenario di utilizzo
 Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo reale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica elettronica univoca, previo pagamento andato a buon fine, al richiedente.
 
 .. csv-table:: Gestione buoni pasto elettronici
-   :header: "#", "Oggetto della pendenza", "Passo di processo"
+   :header: "#", "Configurazione del tipo pendenza", "Passo di processo"
    :widths: 20,40,40
 
-   "1", "Layout form dati", "Definizione form in cui si chiede il numero di buoni pasto richiesti"
-   "2", "Elaborazione.Validazione", "Gestione delle soglie (es. massimo 20 buoni pasti a richiesta)"
-   "3", "Elaborazione.Trasformazione", "Creazione della pendenza correlata al numero di buoni mensa effettivamente richiesti (es. determinazione del costo finale, con le varie franchigie, aggravi amministrativi e via dicendo)"
-   "4", "Elaborazione.Applicazione", "Interfacciamento con l'applicazione verticale che crea i codici relativi ai buoni mensa richiesti"
+   "1", "Pagamento spontaneo: Form inserimento dati", "Definizione form in cui si chiede il numero di buoni pasto richiesti"
+   "2", "Pagamento spontaneo: Validazione", "Gestione delle soglie (es. massimo 20 buoni pasti a richiesta)"
+   "3", "Pagamento spontaneo: Trasformazione dati", "Creazione della pendenza correlata al numero di buoni mensa effettivamente richiesti (es. determinazione del costo finale, con le varie franchigie, aggravi amministrativi e via dicendo)"
+   "4", "Pagamento spontaneo: Inoltro", "Interfacciamento con l'applicazione verticale che crea i codici relativi ai buoni mensa richiesti"
 
-E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementabili direttamente, con i meccanismi appena visti, da GovPay**.
+È di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementabili direttamente, con i meccanismi appena visti, da GovPay**.

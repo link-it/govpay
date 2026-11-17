@@ -4,7 +4,8 @@ Ruoli
 -----
 
 I ruoli rappresentano una delle modalità con cui assegnare le autorizzazioni a operatori e applicazioni. I ruoli vengono acquisiti da
-GovPay tramite il profilo utente ottenuto dal sistema che gestisce il processo di autenticazione. Dopo aver effettuato l'accesso a GovPay, l'operatore o applicazione ottie
+GovPay tramite il profilo utente ottenuto dal sistema che gestisce il processo di autenticazione. Dopo aver effettuato l'accesso a GovPay, l'operatore o applicazione ottiene le autorizzazioni dei ruoli associati alla sua utenza.
+
 La sezione *Configurazioni > Ruoli* mostra l’elenco dei ruoli già presenti nel sistema.
 
 
