@@ -44,14 +44,17 @@ And match response.servizioGovPay.versioneZip == <versioneZipLetta>
 # Il batch di elaborazione esegue una richiesta alla volta e una richiesta arrivata durante un'esecuzione viene persa
 # al suo termine. Il test precedente avvia un'elaborazione di tutte le RT del dominio per tutti i connettori: prima
 # di preparare i dati si richiede un'elaborazione e si attende che la sonda del batch registri un'esecuzione
-# terminata dopo la richiesta, cosi' l'eventuale esecuzione in corso e' conclusa.
-* def querySondaElaborazione = "SELECT data_ok FROM sonde WHERE nome = 'elaborazione-trac-notif-pag'"
+# terminata dopo la richiesta, cosi' l'eventuale esecuzione in corso e' conclusa. Al termine di ogni esecuzione la
+# sonda registra in dati_check l'istante di fine (data_ultimo_batch:<millisecondi>); data_ok cambia solo quando cambia
+# lo stato della sonda e non indica l'ultima esecuzione.
+* def querySondaElaborazione = "SELECT dati_check FROM sonde WHERE nome = 'elaborazione-trac-notif-pag'"
 * def attendiFineElaborazione =
 """
 function(richiesta) {
   for (var i = 0; i < 180; i++) {
-    var dataOk = db.readValue(querySondaElaborazione);
-    if (dataOk != null && dataOk.getTime() > richiesta) return true;
+    var datiCheck = db.readValue(querySondaElaborazione);
+    var dataUltimoBatch = datiCheck == null ? null : /data_ultimo_batch:(\d+)/.exec('' + datiCheck);
+    if (dataUltimoBatch != null && parseInt(dataUltimoBatch[1], 10) > richiesta) return true;
     java.lang.Thread.sleep(5000);
   }
   return false;
