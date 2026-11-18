@@ -9,8 +9,8 @@ La sezione *Riscossioni* è dedicata alla consultazione delle somme che sono sta
 Visualizzazione della sezione
 -----------------------------
 
-Attraverso le impostazioni della console si decide se visualizzare questa sezione, la sezione è nascosta di default.
-Per abilitarla si deve intervenire sulla seguente proprietà:
+La sezione è nascosta di default. Si abilita nel file di configurazione della console ``assets/Config.js``
+(con l'immagine Docker, il ``Config.js`` esterno sul volume di configurazione), impostando la proprietà seguente:
 
 .. code-block:: javascript
    :linenos:
@@ -21,6 +21,11 @@ Per abilitarla si deve intervenire sulla seguente proprietà:
        }
    };
 
+Il valore iniziale del file viene dalla proprietà ``it.govpay.backoffice.gui.sezioneRiscossioni.enabled`` (predefinita ``false``)
+usata nella compilazione e dall'installer.
+
+Con la sezione abilitata, la voce "Prospetto riscossioni attese" si sposta dalla sezione :ref:`govpay_ricevute` al menu di questa sezione.
+
 
 Dettaglio sezione
 -----------------
@@ -28,7 +33,7 @@ Dettaglio sezione
 Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagina tramite il form presente sul lato sinistro. Di rilevante importanza è la possibilità di filtrare in base allo stato della riscossione:
 
 -  *Riscossa* - è lo stato iniziale relativo agli importi riversati ma non ancora riconciliati.
--  *Riconciliata* - è lo stato finale che indica che tutti gli importi di una determina pendenza sono stati già riconciliati con le somme riversate.
+-  *Riconciliata* - è lo stato finale che indica che tutti gli importi di una determinata pendenza sono stati già riconciliati con le somme riversate.
 
 È inoltre possibile selezionare le riscossioni in base al tipo. Esistono due tipi di riscossione:
 
@@ -46,10 +51,10 @@ Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagi
 È possibile scaricare un file CSV con i dati delle riscossioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce
 "Scarica Resoconto" presente nel menu a destra sulla testata della pagina.
 
-Selezionando il singolo elemento dall’elenco si accede alla pagina di dettaglioche riporta ulteriori informazioni non modificabili:
+Selezionando il singolo elemento dall’elenco si accede alla pagina di dettaglio che riporta ulteriori informazioni non modificabili:
 
 .. figure:: ../../_images/AV04DettaglioRiscossione.png
    :align: center
-   :name: DettealioRiscossioni
+   :name: DettaglioRiscossioni
 
    Dettaglio Riscossione
