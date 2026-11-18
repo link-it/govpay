@@ -15,7 +15,10 @@ L'etichetta **entro il** mostra al cittadino debitore una data che può assumere
 Data scadenza e data validità nelle richieste json
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-E' possibile indicare all'interno di una pendenza tre differenti date opzionali:
+E' possibile indicare all'interno di una pendenza tre differenti date opzionali. La data scadenza avviso, come la proprietà
+**nascondiDataScadenzaAvviso** descritta più avanti, si indica nell'elemento **proprieta** della pendenza, disponibile nelle
+API Pendenze v2 e nelle API Backoffice (oltre che nella risposta di verifica delle API Ente Creditore v2); il nome del campo
+è **dataScandenzaAvviso**, da scrivere così come definito nelle API:
 
 .. code-block:: json
   :caption: Data scadenza, data validità e data scadenza avviso all'interno di una pendenza
@@ -44,6 +47,11 @@ Il sistema consente di visualizzare una data sull'avviso di pagamento per le pen
   -  **it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita=GG**
 
 la data visualizzata nell'avviso sarà calcolata come la somma tra la data di creazione della pendenza e il numero di giorni definito nella proprietà.
+
+La proprietà si imposta nel file ``govpay.properties`` (o nella corrispondente voce dell'installer) e deve essere un numero intero
+maggiore o uguale a 1: valori non numerici o minori di 1 vengono ignorati. La stessa data viene comunicata a pagoPA come data
+di scadenza del pagamento (*dueDate*) nella risposta alle primitive *paGetPayment* e *paGetPaymentV2*; in assenza della proprietà, per le
+pendenze senza date GovPay comunica la data convenzionale 31/12/2999.
 
 Omettere la data di scadenza nell'Avviso pagoPA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

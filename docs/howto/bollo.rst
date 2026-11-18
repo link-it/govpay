@@ -4,19 +4,25 @@ Marca da Bollo Telematica
 ==========================
 
 La piattaforma pagoPA supporta la specifica @e.bollo per il pagamento della Marca da Bollo Telematica. In GovPay
-questo servizio è realizzabile in maniera analoga ad un qualsiasi pagamento ad iniziativa ente, compilando opportunamente 
-la richiesta di pagamento.
+questo servizio si realizza caricando una pendenza che contiene una voce di tipo bollo (ad esempio con l'operazione
+*PUT /pendenze/{idA2A}/{idPendenza}* delle API Pendenze v2) e facendola pagare dal portale dei pagamenti,
+come un qualsiasi pagamento ad iniziativa ente tramite il Checkout di pagoPA.
 
 Configurazione
 ~~~~~~~~~~~~~~
 
-Per autorizzare il pagamento della Marca da Bollo Telematica in GovPay è sufficiente abilitare il tipo tributo "Marca da Bollo" nella
-configurazione dell'Ente Creditore che ne richiede il pagamento.
+Per autorizzare il pagamento della Marca da Bollo Telematica in GovPay è sufficiente abilitare, tra i *Tipi Entrata*
+dell'Ente Creditore che ne richiede il pagamento, l'entrata *Marca da Bollo Telematica* (codice ``BOLLOT``), che GovPay
+crea disabilitata alla registrazione di un ente intermediato (vedi :ref:`govpay_configurazione_enti`).
+
+Il bollo viene trasmesso a pagoPA solo con la primitiva *paGetPaymentV2*: la stazione dell'ente deve quindi essere
+configurata su pagoPA per operare con la versione 2 dei servizi. Con la primitiva *paGetPayment* GovPay rifiuta
+il pagamento di una pendenza che contiene una marca da bollo.
 
 Esecuzione del pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Per avviare il pagamento di una Marca da Bollo Telematica è sufficiente valorizzare opportunamente
+Per predisporre il pagamento di una Marca da Bollo Telematica è sufficiente valorizzare opportunamente
 una delle voci della pendenza dell'elemento **voci**:
 
 .. code-block:: json
@@ -29,7 +35,7 @@ una delle voci della pendenza dell'elemento **voci**:
          "idVocePendenza": "12345_1",
          "importo": 16.00,
          "descrizione": "MBT per certificato anagrafico prot 123456",
-         "tipoBollo": "Imposta di bollo",
+         "tipoBollo": "01",
          "hashDocumento": "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=",
          "provinciaResidenza": "RO"
          }
@@ -39,11 +45,14 @@ una delle voci della pendenza dell'elemento **voci**:
 Di seguito alcune informazioni aggiuntive per la valorizzazione dei campi:
 
   - **importo**: importo della marca da bollo. Al momento della scrittura, pagoPA supporta solo il taglio da 16€
+  - **tipoBollo**: tipologia del bollo digitale; nelle API Pendenze v2 l'unico valore ammesso è ``01`` (imposta di bollo),
+    mentre nelle API Pendenze v1 e nelle API Backoffice il valore è ``Imposta di bollo``
   - **hashDocumento**: da specifiche pagoPA "Contiene l’impronta informatica (digest) del documento informatico cui è associata la marca da bollo digitale. L’algoritmo di hash da utilizzare è SHA-256. La stringa di 256 bit (32 ottetti) risultato di tale algoritmo deve essere convertito in base64"
   - **provinciaResidenza**: da specifiche pagoPA "Sigla automobilistica della provincia di residenza del soggetto pagatore."
 
-In caso di successo, la Ricevuta Telematica inviata da pagoPA ha allegato il tracciato XML della Marca da Bollo acquistata,
-contenente l'impronta del documento associato firmata digitalmente per eventuali verifiche.
+In caso di successo, la ricevuta inviata da pagoPA riporta, per la voce di bollo, il tracciato XML della Marca da Bollo acquistata,
+contenente l'impronta del documento associato firmata digitalmente per eventuali verifiche. Nelle API GovPay la riscossione
+della voce è di tipo ``MBT`` e il tracciato è riportato nel suo **allegato**.
 
 .. code-block:: xml
     :caption: Esempio di Marca da Bollo
@@ -73,6 +82,6 @@ Informazioni aggiuntive
 Gli importi riscossi per il pagamento delle Marche da Bollo non saranno accreditati su un conto
 dell'Ente Creditore, ma su un conto dell'Agenzia delle Entrate pertanto non saranno soggetti a riconciliazione.
 
-Al momento della scrittura nessun PSP supporta il pagamento ad iniziativa PSP della Marca da Bollo,
-pertanto un Avviso pagoPA associato ad una Marca da Bollo Telematica risulterà non pagabile. 
+GovPay non produce l'Avviso pagoPA per le pendenze che contengono una Marca da Bollo Telematica: la stampa
+dell'avviso viene rifiutata e queste pendenze vanno pagate dal portale dei pagamenti.
 

@@ -9,7 +9,7 @@ L'ente creditore genera l'*Avviso di Pagamento* che viene consegnato al debitore
 
 Lo scenario si articola complessivamente nelle seguenti fasi:
 
-1. L’Ente Creditore, alla predisposizione di una nuova pendenza, stampa l’Avviso di Pagamento pagoPA ad essa associato e lo consegna al Soggetto Debitore, in formato digitale o cartaceo, secondo le modalità previte dell’Ente.
+1. L’Ente Creditore, alla predisposizione di una nuova pendenza, stampa l’Avviso di Pagamento pagoPA ad essa associato e lo consegna al Soggetto Debitore, in formato digitale o cartaceo, secondo le modalità previste dell’Ente.
 
 2. Munito dell’avviso, il Soggetto Debitore interagisce con il PSP che acquisisce gli estremi dell’Avviso, tramite scansione dei glifi grafici o trascrizione manuale dei codici di riferimento.
 
@@ -24,7 +24,7 @@ Le fasi che andiamo a descrivere per questo scenario sono le seguenti:
    - L'uso delle *API Pendenze* di GovPay per l'integrazione con i sistemi verticali gestionali
      e consentire il caricamento delle pendenze nell'archivio dei pagamenti in attesa e generare l'avviso di pagamento.
 
-   - L'uso delle *API Verifica e Notifica*, esposte dall'ente, per consentire a GovPay l'interrogazione del gestionale dell'ente nei casi in cui sia necessario accedere ai dati della pendenza in corso di pagamento. Le stesse API sono successivamente usate da GovPay per notificare all'ente l'avvenuto pagamento.
+   - L'uso delle *API Ente Creditore*, esposte dal gestionale dell'ente, per consentire a GovPay l'interrogazione del gestionale nei casi in cui sia necessario accedere ai dati della pendenza in corso di pagamento. Le stesse API sono successivamente usate da GovPay per notificare all'ente l'avvenuto pagamento. Gli esempi si riferiscono alla versione 2 delle API Ente Creditore (versione ``REST_2`` del connettore dell'applicazione, vedi :ref:`integrazione_api`).
 
 2. La :ref:`govpay_scenari_dovuto3_configurazione` di GovPay per supportare lo scenario
    descritto utilizzando il cruscotto di gestione.

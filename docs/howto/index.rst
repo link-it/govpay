@@ -10,9 +10,7 @@ How-To
         :caption: Argomenti trattati:
 
         bilinguismo
-        convenzione
         dataScadenzaAvvisi
         bollo
         rateizzazione
-        nexi        
         multibeneficiario

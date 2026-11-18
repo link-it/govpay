@@ -3,7 +3,7 @@
 Realizzazione
 -------------
 
-In questo scenario, *Modello 3 - Pagamento ad Inziativa PSP*, il cittadino debitore, in possesso dell'avviso di pagamento fornitogli dall'ente creditore, effettua il pagamento tramite il PSP che ha scelto. 
+In questo scenario, *Pagamento ad Iniziativa PSP*, il cittadino debitore, in possesso dell'avviso di pagamento fornitogli dall'ente creditore, effettua il pagamento tramite il PSP che ha scelto. 
 
 Ai fini dell'integrazione tra GovPay e l'Ente Creditore, per questo scenario, individuiamo i seguenti passaggi chiave:
 
@@ -29,12 +29,13 @@ Distinguiamo:
 - Caso **Solo generazione avviso senza caricamento pendenza**
 	il Gestionale Pendenze può avvisare in autonomia il pagamento generando internamente il numero avviso identificativo e non alimentare l’archivio dei pagamenti in attesa di GovPay.
 
-Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per caricare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata regitrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
+Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per caricare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
+Il base path ``/govpay-api-pendenze`` è quello del dispiegamento su Tomcat; nel dispiegamento EAR è ``/govpay/backend/api/pendenze`` (vedi :ref:`integrazione_api`).
 
 .. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	PUT https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PUT https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
 	{
 		"idDominio":"01234567890",
 		"idTipoPendenza":"TICKET",
@@ -63,10 +64,11 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 .. code-block:: text
 	:caption: Risposta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	HTTP 200 OK
+	HTTP 201 Created
 	{
 		"idDominio":"01234567890",
-		"numeroAvviso":"001110000000000164"
+		"numeroAvviso":"001110000000000164",
+		"UUID":"a1b2c3d4e5f6...",
 		"pdf":"...BASE64..."
 	}
 
@@ -107,8 +109,8 @@ GovPay interroga il gestionale dell'ente, per verificare gli estremi della pende
 	    },
 	    "importo":45.01,
 	    "numeroAvviso":"001110000000000164",
-	    "dataValidita":"2018-06-01",
-	    "dataScadenza":"2018-12-31",
+	    "dataValidita":"2026-12-31",
+	    "dataScadenza":"2027-12-31",
 	    "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
 	    "voci":
 	    [
@@ -130,93 +132,71 @@ GovPay interroga il gestionale dell'ente, per verificare gli estremi della pende
 Notifica del Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Superata la fase di verifica, il PSP perfeziona la riscossione degli importi dovuti e completa il processo di pagamento. GovPay gestisce il colloquio previsto con la piattaforma pagoPA e notifica l’esito delle operazioni al Gestionale Pendenze tramite l’operazione **POST /pagamenti/{idDominio}/{iuv}**.
+Superata la fase di verifica, il PSP perfeziona la riscossione degli importi dovuti e completa il processo di pagamento. GovPay gestisce il colloquio previsto con la piattaforma pagoPA e notifica l’esito delle operazioni al Gestionale Pendenze tramite l’operazione **PUT /ricevute/{idDominio}/{iuv}/{idRicevuta}** delle API Ente Creditore v2. Lo iuv è quello associato al numero avviso generato in precedenza, mentre l'idRicevuta è l'identificativo della ricevuta assegnato da pagoPA (*receiptId*).
 
 .. code-block:: text
-	:caption: Notifica del Pagamento con *POST /pagamenti/{idDominio}/{iuv}*
+	:caption: Notifica del Pagamento con *PUT /ricevute/{idDominio}/{iuv}/{idRicevuta}*
 
-	POST /pagamenti/01234567890/000000000000141
+	PUT /ricevute/01234567890/110000000000164/a1b2c3d4e5f60001
 	{
-	    "idA2A":"GestPag",
-	    "idPendenza":"ABC-001",
+	    "dominio":
+	    {
+	        "idDominio":"01234567890",
+	        "ragioneSociale":"Comune Dimostrativo"
+	    },
+	    "iuv":"110000000000164",
+	    "idRicevuta":"a1b2c3d4e5f60001",
+	    "importo":45.01,
+	    "esito":"ESEGUITO",
+	    "istitutoAttestante":
+	    {
+	        "idPSP":"ABCDITMMXXX",
+	        "denominazione":"Banca Dimostrativa S.p.A.",
+	        "idCanale":"01234567890_01"
+	    },
+	    "pendenza":
+	    {
+	        "idA2A":"GestPag",
+	        "idPendenza":"ABC-001",
+	        "idTipoPendenza":"TICKET",
+	        "causale":"Prestazione n.ABC-001",
+	        "importo":45.01,
+	        "numeroAvviso":"001110000000000164",
+	        "voci":
+	        [
+	            {
+	                "idVocePendenza":"ABC-001-1100",
+	                "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+	                "riscossione":
+	                {
+	                    "iuv":"110000000000164",
+	                    "iur":"a1b2c3d4e5f60001",
+	                    "indice":1,
+	                    "tipo":"ENTRATA",
+	                    "importo":45.01,
+	                    "data":"2026-11-18"
+	                }
+	            }
+	        ]
+	    },
+	    "data":"2026-11-18T10:15:00",
+	    "dataPagamento":"2026-11-18T10:14:30",
 	    "rpt":
 	    {
-			"versioneOggetto":"6.2",
-			"dominio":
-		{
-		    --[OMISSIS]--
-		},
-		"identificativoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-		"dataOraMessaggioRichiesta":"2018-06-01",
-		"autenticazioneSoggetto":"N_A",
-		"soggettoVersante":
-		{
-		    --[OMISSIS]--
-		},
-		"soggettoPagatore":
-		{
-		    --[OMISSIS]--
-		},
-		"enteBeneficiario":
-		{
-		    --[OMISSIS]--
-		},
-		"datiVersamento":
-		{
-		    --[OMISSIS]--
-		}
+	        "tipo":"ctPaymentPA",
+	        "xml":"--[XML originale codificato in base64]--",
+	        "json":{ --[OMISSIS]-- }
 	    },
 	    "rt":
 	    {
-			"versioneOggetto":"6.2",
-			"dominio":
-			{
-			    --[OMISSIS]--
-			},
-			"identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
-			"dataOraMessaggioRicevuta":"2018-06-01",
-			"riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-			"riferimentoDataRichiesta":"2018-06-01",
-			"istitutoAttestante":
-			{
-			    --[OMISSIS]--
-			},
-			"enteBeneficiario":
-			{
-			    --[OMISSIS]--
-			},
-			"soggettoVersante":
-			{
-			    --[OMISSIS]--
-			},
-			"soggettoPagatore":
-			{
-			    --[OMISSIS]--
-			},
-			"datiPagamento":
-			{
-			    --[OMISSIS]--
-			}
+	        "tipo":"ctReceipt",
+	        "xml":"--[XML originale codificato in base64]--",
+	        "json":{ --[OMISSIS]-- }
 	    },
-	    "riscossioni":
-	    [
-			{
-			    "idDominio":"01234567890",
-			    "iuv":"000000000000141",
-			    "iur":"idRisc-152784362114159",
-			    "indice":1,
-			    "pendenza":"/pendenze/GestPag/ABC-001",
-			    "idVocePendenza":"ABC-001-1100",
-			    "rpp":"/rpp/01234567890/000000000000141/1871148690",
-			    "stato":null,
-			    "tipo":null,
-			    "importo":45.01,
-			    "data":"2018-06-01",
-			    "commissioni":null,
-			    "allegato":null,
-			    "incasso":null
-			}
-	    ]
+	    "modello":"Pagamento ad iniziativa PSP"
 	}
 
-Si noti che una pendenza può essere oggetto di ripetuti tentativi di pagamento da parte del Soggetto Pagatore. In tal caso il Gestionale Pendenze deve saper gestire più notifiche di pagamento, che si distinguono per il parametro ccp (Codice Contesto Pagamento) indicato nella notifica medesima.
+Il corpo della notifica è descritto dallo schema *Ricevuta* della `specifica OpenAPI delle API Ente Creditore v2 <https://github.com/link-it/govpay/blob/3.10.x/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml>`__.
+Con la versione ``REST_1`` del connettore GovPay invoca invece l'operazione *POST /pagamenti/{idDominio}/{iuv}* delle API Ente Creditore v1, mantenuta per compatibilità.
+
+Si noti che una pendenza può essere oggetto di ripetuti tentativi di pagamento da parte del Soggetto Pagatore. In tal caso il Gestionale Pendenze deve saper gestire più notifiche di pagamento, che si distinguono per l'identificativo della ricevuta (*idRicevuta*, corrispondente al *receiptId* di pagoPA o al *ccp* dei pagamenti con il vecchio modello).
