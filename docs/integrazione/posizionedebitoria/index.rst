@@ -1,6 +1,6 @@
 .. _integrazione_posizionedebitoria:
 
-.. INFO::
+.. note::
    In questa sezione viene descritto il processo di gestione di una posizione debitoria 
    tramite le API GovPay.
 
@@ -12,22 +12,25 @@ Caricamento di una posizione debitoria
 
 Il caricamento di una posizione debitoria su GovPay si realizza tramite chiamata alle API Pendenze:
 
-	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]`
+	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false][&dataAvvisatura=MAI]`
 
 Dove:
 
 - idA2A: codice identificativo dell’applicativo chiamante assegnato in sede di onboarding;
 - idPendenza: codice identificativo della pendenza nel dominio dell’applicativo chiamante;
-- stampaAvviso: parametro opzionale che indica se includere l’avviso di pagamento in formato pdf all’interno del messaggio di risposta.
+- stampaAvviso: parametro opzionale che indica se includere l’avviso di pagamento in formato pdf all’interno del messaggio di risposta;
+- dataAvvisatura: parametro opzionale; con il valore ``MAI`` la pendenza non viene notificata al debitore (né la notifica dell'avviso né il promemoria di scadenza). La data di invio della notifica si indica invece con il campo ``dataNotificaAvviso`` della pendenza.
+
+Il corpo della richiesta (schema *NuovaPendenza* della `specifica OpenAPI <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`__) comprende, oltre ai dati della pendenza, campi opzionali come ``dataNotificaAvviso`` e ``dataPromemoriaScadenza`` (date di invio della notifica dell'avviso e del promemoria di scadenza), ``dataPubblicazione`` (data da cui l'avviso è pagabile su pagoPA) e ``sendAbilitato`` (attualizzazione dell'importo con le spese di notifica SEND).
 
 In risposta si ottengono i riferimenti all’avviso associato alla pendenza e la stampa in formato pdf.
 
 Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per caricare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	PUT https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PUT https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
 	{
 		"idDominio":"01234567890",
 		"idTipoPendenza":"TICKET",
@@ -53,37 +56,41 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 		]
 	}
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Risposta *PUT /pendenze/{idA2A}/{id_pendenza}*
 	
-	HTTP 200 OK
+	HTTP 201 Created
 	{
 		"idDominio":"01234567890",
-		"numeroAvviso":"001110000000000164"
+		"numeroAvviso":"310000000000000001",
+		"UUID":"a0dda98cbdf342d78883c5faec1c4c0c",
 		"pdf":"...BASE64..."
 	}
 
-Aggornamento di una posizione debitoria
----------------------------------------
+La risposta ha codice **201 Created** quando la pendenza viene creata e **200 OK** quando una pendenza già presente viene aggiornata.
+
+Aggiornamento di una posizione debitoria
+----------------------------------------
 
 L'aggiornamento di una posizione debitoria su GovPay si realizza tramite chiamata alle API Pendenze:
 
-	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false]`
+	`PUT /pendenze/{idA2A}/{idPendenza}[?stampaAvviso=true|false][&dataAvvisatura=MAI]`
 
 Dove:
 
 - idA2A: codice identificativo dell’applicativo chiamante assegnato in sede di onboarding;
 - idPendenza: codice identificativo della pendenza nel dominio dell’applicativo chiamante;
-- stampaAvviso: parametro opzionale che indica se includere l’avviso di pagamento in formato pdf all’interno del messaggio di risposta.
+- stampaAvviso: parametro opzionale che indica se includere l’avviso di pagamento in formato pdf all’interno del messaggio di risposta;
+- dataAvvisatura: parametro opzionale, considerato solo alla creazione della pendenza (vedi sopra).
 
 In risposta si ottengono i riferimenti all’avviso associato alla pendenza e la stampa in formato pdf.
 
 Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per aggiornare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	PUT https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PUT https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
 	{
 		"idDominio":"01234567890",
 		"idTipoPendenza":"TICKET",
@@ -109,18 +116,19 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 		]
 	}
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Risposta *PUT /pendenze/{idA2A}/{id_pendenza}*
 	
 	HTTP 200 OK
 	{
 		"idDominio":"01234567890",
-		"numeroAvviso":"001110000000000164"
+		"numeroAvviso":"310000000000000001",
+		"UUID":"a0dda98cbdf342d78883c5faec1c4c0c",
 		"pdf":"...BASE64..."
 	}
 
-Annullamento di una posizione debitoria
----------------------------------------
+Annullamento e riattivazione di una posizione debitoria
+-------------------------------------------------------
 
 Una posizione debitoria in stato **NON ESEGUITA** può essere annullata tramite chiamata alle API Pendenze:
 
@@ -131,14 +139,16 @@ Dove:
 - idA2A: codice identificativo dell’applicativo chiamante assegnato in sede di onboarding;
 - idPendenza: codice identificativo della pendenza nel dominio dell’applicativo chiamante;
 
-In risposta si ottiene **200 OK** quando l'operazione viene eseguita con successo.
+In risposta si ottiene **200 OK** con il dettaglio della pendenza aggiornata quando l'operazione viene eseguita con successo.
+
+Oltre a ``/stato``, l'operazione accetta i path ``/descrizioneStato`` (REPLACE), ``/ack`` (REPLACE) e ``/nota`` (ADD).
 
 Il seguente esempio mostra l'invocazione della **PATCH /pendenze/{idA2A}/{id_pendenza}** per annullare la pendenza. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
 
-.. code-block:: json
-	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
+.. code-block:: text
+	:caption: Richiesta *PATCH /pendenze/{idA2A}/{id_pendenza}*
 
-	PATCH https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PATCH https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
 	[
 	   {
 	      "op":"REPLACE",
@@ -152,10 +162,31 @@ Il seguente esempio mostra l'invocazione della **PATCH /pendenze/{idA2A}/{id_pen
 	   }
 	]
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Risposta *PATCH /pendenze/{idA2A}/{id_pendenza}*
 	
 	HTTP 200 OK
+	{
+		"idA2A":"GestPag",
+		"idPendenza":"ABC-001",
+		"stato":"ANNULLATA",
+		"descrizioneStato":"Pendenza annullata il 2025-05-21",
+		...
+	}
+
+Una pendenza **ANNULLATA** può essere riattivata con la stessa operazione, riportandone lo stato a **NON_ESEGUITA**:
+
+.. code-block:: text
+	:caption: Richiesta *PATCH /pendenze/{idA2A}/{id_pendenza}*
+
+	PATCH https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
+	[
+	   {
+	      "op":"REPLACE",
+	      "path":"/stato",
+	      "value":"NON_ESEGUITA"
+	   }
+	]
 
 Download avviso di pagamento
 ----------------------------
@@ -172,10 +203,10 @@ Dove:
 
 Il seguente esempio mostra l'invocazione della **GET /avvisi/{idDominio}/{numeroAvviso}** per scaricare l'avviso di pagamento in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890** e il numero avviso sia **310000000000000001**.
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Richiesta *GET /avvisi/{idDominio}/{numeroAvviso}*
 	
-	GET https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/avvisi/01234567890/310000000000000001
+	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/avvisi/01234567890/310000000000000001
 	Accept:application/pdf
 	
 	HTTP/1.1 200 OK
@@ -199,18 +230,17 @@ Dove:
 Si fa presente che questo servizio non deve essere utilizzato in procedure che prevedono strategie di polling, ad esempio per verificare l’esito di un pagamento, poiché difficilmente sostenibili.
 
 Il seguente esempio mostra l'invocazione della **GET /pendenze/{idA2A}/{id_pendenza}** per leggere la pendenza. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
-Di seguito un esempio di chiamata in ambiente di simulazione:
 
-.. code-block:: json
+.. code-block:: text
 	:caption: Richiesta *GET /pendenze/{idA2A}/{idPendenza}*
 
-	GET https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/1648377136499
+	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
 	HTTP 200 OK
 	
 	{
 	   "idA2A":"GestPag",
-	   "idPendenza":"1648377136499",
-	   "idTipoPendenza":"ABC-001",
+	   "idPendenza":"ABC-001",
+	   "idTipoPendenza":"TICKET",
 	   "dominio":{
 	      "idDominio":"01234567890",
 	      "ragioneSociale":"Ente Creditore"
@@ -347,30 +377,24 @@ Stampa della ricevuta di pagamento
 
 La piattaforma consente la stampa in versione analogica della ricevuta di pagamento tramite servizio REST:
 
-	`GET /rpp/{idDominio}/{iuv}/{receiptId}/rt
+	`GET /rpp/{idDominio}/{iuv}/{ccp}/rt
 	Accept: application/pdf`
 
 Dove:
 
 - idDominio: è il codice fiscale dell'Ente Creditore in PagoPA;
 - iuv: identificativo univoco versamento;
-- receiptId: identificativo della ricevuta;
+- ccp: identificativo della ricevuta; nel modello unico corrisponde al *receiptId* della ricevuta.
 
-Il seguente esempio mostra l'invocazione della **GET /rpp/{idDominio}/{iuv}/{receiptId}/rt** per scaricare la ricevuta di pagamento in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001** e il receiptId sia **100000000000902038186**.
+Il seguente esempio mostra l'invocazione della **GET /rpp/{idDominio}/{iuv}/{ccp}/rt** per scaricare la ricevuta di pagamento in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001** e il ccp (receiptId) sia **100000000000902038186**.
 
-.. code-block:: json
-	:caption: Richiesta *GET /rpp/{idDominio}/{iuv}/{receiptId}/rt*
+.. code-block:: text
+	:caption: Richiesta *GET /rpp/{idDominio}/{iuv}/{ccp}/rt*
 	
-	GET
-	https://demo.govcloud.it/govpay/backend/api/pendenze/rs/basic/v2/rpp/80184430587/10000000000000001/100000000000902038186/rt
+	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/rpp/01234567890/10000000000000001/100000000000902038186/rt
 	Accept: application/pdf
 	
 	HTTP/1.1 200 OK
-	content-disposition: attachment; filename="80184430587_310000000000090203.pdf"
+	content-disposition: attachment; filename="01234567890_10000000000000001_100000000000902038186.pdf"
 	Content-Type: application/pdf
 	---[pdf della ricevuta]---
-
-
-
-
-
