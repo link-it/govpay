@@ -17,11 +17,14 @@ Creditore e dei servizi centrali del progetto pagoPA.
 Gli Attori principali del Progetto pagoPA
 -----------------------------------------
 
-I componenti principali del progetto pagoPA, erogati centralmente da
-AgID, sono:
+I componenti principali della piattaforma pagoPA, erogati da
+PagoPA S.p.A., sono:
 
--  il *Nodo SPC*: componente che funge da gateway tra la rete SPC degli Enti Creditori e la rete interbancaria dei PSP;
--  il *WISP*: interfaccia grafica che guida l’utente nella scelta del PSP con cui perfezionare il pagamento.
+-  il *Nodo dei Pagamenti*: componente che funge da gateway tra gli Enti Creditori e i PSP aderenti alla piattaforma;
+-  il *Checkout*: interfaccia che guida l'utente nella scelta del PSP e dello strumento con cui perfezionare il pagamento;
+-  i servizi *GPD/ACA* (Gestione Posizioni Debitorie e Archivio Centralizzato Avvisi), per la pubblicazione delle posizioni debitorie sulla piattaforma;
+-  il servizio *FdR* (Flussi di Rendicontazione), da cui si acquisiscono le rendicontazioni dei PSP;
+-  il servizio *Biz Events*, da cui si possono recuperare le ricevute di pagamento.
 
 Gli attori che interagiscono nell'ambito del progetto sono:
 
@@ -44,7 +47,7 @@ I principali attori interni all'Ente Creditore
 
 Questo documento si concentra sull'organizzazione interna dell'Ente
 Creditore, al fine di focalizzare le esigenze di integrazione dei
-diversi software applicativi dell'Ente. A tal fine nella figura appema vista sono stati introdotti i principali attori interni all'Ente
+diversi software applicativi dell'Ente. A tal fine nella figura appena vista sono stati introdotti i principali attori interni all'Ente
 Creditore, ovvero:
 
 -  *Helpdesk*: Personale dedicato ai servizi di helpdesk di primo o
@@ -59,32 +62,47 @@ Creditore, ovvero:
    Creditore e responsabili della riconciliazione con i pagamenti
    operati sulla piattaforma pagoPA.
 -  *GovPay*: gateway di pagamento verso la piattaforma pagoPA che
-   realizza le funzioni di backend richieste dalla specifica AgID.
+   realizza le funzioni di backend richieste dalle specifiche pagoPA.
    Consente l’integrazione Application-To-Application dei portali di
    pagamento e dei sistemi verticali dell'Ente creditore tramite le
    seguenti API:
 
-   -  *API Pagamento*: Servizi, ad uso dei portali di pagamento
-      dell'Ente, disponibili per la realizzazione di pagamenti ad
-      iniziativa Ente e di consultazione della posizione debitoria e
-      dello storico dei pagamenti.
    -  *API Pendenze*: Servizi per l'interscambio dei dati relativi alle
       pendenze di pagamento, ad uso dei verticali gestori delle
       posizioni debitorie.
-   -  *API Riconciliazione*: Servizi dedicati ai sistemi degli Uffici
+   -  *API Ragioneria*: Servizi dedicati ai sistemi degli Uffici
       Amministrativi Contabili dell’Ente Creditore responsabili della
-      riconciliazione dei pagamenti.
+      riconciliazione dei pagamenti (riconciliazioni, riscossioni,
+      rendicontazioni e ricevute).
    -  *API Backoffice*: Servizi dedicati all'integrazione di cruscotti
       di gestione e monitoraggio alternativi alla GovPay Console.
-   -  *API pagoPA*: le API native previste dal protocollo pagoPA,
-      utilizzate internamente dal Connettore pagoPA per le interazioni
-      con il Nodo SPC del progetto pagoPA.
+   -  *API pagoPA*: i servizi *paForNode* del modello unico
+      (``paVerifyPaymentNotice``, ``paGetPayment`` e ``paGetPaymentV2``,
+      ``paSendRT`` e ``paSendRTV2``, ``paDemandPaymentNotice``) invocati
+      dal Nodo dei Pagamenti.
 
 -  *GovPay Console*: Interfaccia utente attraverso cui gli operatori
    abilitati dell’Amministrazione possono configurare la piattaforma di
    pagamento e monitorarne l'operatività sia dei processi di pagamento
    che di riconciliazione. Realizza le funzioni di Tavolo Operativo
    richiesti dalle specifiche pagoPA.
+
+Componenti della piattaforma
+----------------------------
+
+Oltre alle API e alla console del core, alcune funzioni della piattaforma
+sono realizzate da componenti distribuiti separatamente, ciascuno con il
+proprio repository e README (vedi :ref:`inst_componenti_aggiuntivi`):
+
+-  *govpay-fdr-batch*: acquisizione dei Flussi di Rendicontazione da pagoPA;
+-  *govpay-rt-batch*: recupero delle ricevute di pagamento mancanti;
+-  *govpay-aca-batch*: invio delle posizioni debitorie all'Archivio Centralizzato Avvisi tramite il servizio GPD;
+-  *govpay-notify-batch*: notifica alle applicazioni dell'Ente delle rendicontazioni senza pagamento e, se abilitata, spedizione delle ricevute;
+-  *govpay-iban-batch*: verifica degli IBAN e dell'anagrafica degli Enti Creditori su pagoPA;
+-  *govpay-maggioli-jppa*: notifica delle ricevute di pagamento al gateway Maggioli JPPA;
+-  *govpay-gde-api* e *govpay-stampe-api*: Giornale degli Eventi e stampa di avvisi e ricevute per i componenti esterni;
+-  *govpay-portal* e *govpay-portal-api*: portale dei pagamenti del cittadino e relative API (consultazione delle pendenze, pagamento spontaneo, avvisi e ricevute);
+-  *govpay-console* e *govpay-console-api*: nuova console di backoffice, alternativa a quella inclusa nel core.
 
 Nel seguito saranno descritte le modalità di integrazione richieste ai
 sistemi applicativi dell'Ente Creditore, facendo riferimento a diverse

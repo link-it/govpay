@@ -10,25 +10,51 @@ Creditore. Nella tabella seguente sono indicati sia gli indirizzi di
 base di erogazione di ciascun servizio, sia il riferimento alla
 definizione OpenAPI per la documentazione di dettaglio.
 
+Il base path dipende dalla modalità di dispiegamento: nella tabella è
+indicato quello del dispiegamento EAR (WildFly); su Tomcat ogni API è un
+war distinto e il base path è il nome del war (ad esempio
+``/govpay-api-pendenze``, ``/govpay-api-ragioneria``,
+``/govpay-api-backoffice``, ``/govpay-api-pagopa``).
+
 .. list-table::
-   :widths: 25 50 25
+   :widths: 20 30 25 25
    :header-rows: 1
 
    * - API
-     - Base path
-     - OpenAPI
+     - Base path (EAR)
+     - Base path (Tomcat)
+     - Specifica
    * - Pendenze
      - /govpay/backend/api/pendenze
-     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v1/govpay-api-pendenze-v1.yaml&nocors>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_
-   * - Riconciliazione
+     - /govpay-api-pendenze
+     - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v1/govpay-api-pendenze-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`__
+   * - Ragioneria
      - /govpay/backend/api/ragioneria
-     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v1/govpay-api-ragioneria-v1.yaml&nocors>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml&nocors>`_ `v3 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v3/govpay-api-ragioneria.yaml&nocors>`_
+     - /govpay-api-ragioneria
+     - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v1/govpay-api-ragioneria-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`__ `v3 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v3/govpay-api-ragioneria.yaml>`__
    * - Backoffice
      - /govpay/backend/api/backoffice
-     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml&nocors>`_
+     - /govpay-api-backoffice
+     - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`__
+   * - pagoPA
+     - /govpay/frontend/api/pagopa
+     - /govpay-api-pagopa
+     - servizi SOAP del modello unico: `WSDL <https://github.com/link-it/govpay/blob/3.10.x/jars/pagopa-beans/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl>`__
    * - Ente Creditore
      - definita dall'ente creditore
-     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml&nocors>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml&nocors>`_
+     - definita dall'ente creditore
+     - `v1 <https://github.com/link-it/govpay/blob/3.10.x/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml>`__
+
+L'API pagoPA è invocata dal Nodo dei Pagamenti e non dai sistemi
+dell'Ente. L'API Ente Creditore è invece esposta dall'Ente e invocata da
+GovPay e dai suoi componenti: la versione 2 comprende anche la notifica
+delle rendicontazioni senza pagamento (``POST /rendicontazioni``), usata
+da govpay-notify-batch.
+
+I componenti distribuiti separatamente (ad esempio govpay-portal-api,
+govpay-gde-api, govpay-stampe-api e le API REST di avvio dei batch)
+espongono API proprie, descritte nel README di ciascun repository (vedi
+:ref:`inst_componenti_aggiuntivi`).
 
 .. toctree::
         :maxdepth: 2

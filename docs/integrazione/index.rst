@@ -9,8 +9,8 @@ L'integrazione è l'attività necessaria per consentire l'interazione tra i sist
 Gli argomenti trattati sono quindi rivolti agli sviluppatori software che devono realizzare l'integrazione a GovPay delle proprie applicazioni software interne al dominio applicativo
 dei pagamenti degli Enti Creditori (come portali di pagamento, applicazioni verticali che richiedano pagamenti di tributi e/o servizi o applicazioni di ragioneria).
 
-Gli scenari d'uso descritti richiamano le specifiche AgID, disponibili sulla pagina del progetto pagoPA
-(*https://www.agid.gov.it/it/piattaforme/pagopa/linee-guida-documentazione-tecnica*),
+Gli scenari d'uso descritti richiamano le specifiche pagoPA (SANP) pubblicate da PagoPA S.p.A.
+(`https://docs.pagopa.it/sanp <https://docs.pagopa.it/sanp>`_),
 a cui si rimanda per ogni ulteriore informazione sulla specifica pagoPA.
 
 .. toctree::
@@ -24,5 +24,4 @@ a cui si rimanda per ogni ulteriore informazione sulla specifica pagoPA.
         pagamentipsp/index
         riconciliazioni/index
         rendicontazioni/index
-        altriscenari/index
         interfacce/index

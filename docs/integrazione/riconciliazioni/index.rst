@@ -3,9 +3,9 @@
 Riconciliazione degli incassi
 =============================
 
-Il rilascio della ricevuta di pagamento, da parte dell'Ente Creditore o
-del PSP a seconda del modello scelto, libera il Soggetto Debitore da
-ogni ulteriore adempimento. L'Ente Creditore deve invece concludere il
+Il rilascio della ricevuta di pagamento da parte del PSP, tramite la
+piattaforma pagoPA, libera il Soggetto Debitore da ogni ulteriore
+adempimento. L'Ente Creditore deve invece concludere il
 ciclo di vita del pagamento verificando che gli importi riscossi dai PSP
 vengano correttamente riversati nei propri conti di accredito, gestiti
 dalla Banca Tesoriera.
@@ -31,14 +31,14 @@ Riversamento delle somme
 ------------------------
 
 I movimenti di riversamento delle somme riscosse sono operati dai PSP
-secondo i tempi ed i modi indicati dalla specifica AgID “Specifiche
-Attuative dei Codici di Versamento, riversamento e rendicontazione”. In
-particolare, la specifica determina che il PSP del pagatore assicuri che
+secondo i tempi ed i modi indicati dalle specifiche pagoPA (`SANP
+<https://docs.pagopa.it/sanp>`__, sezione dedicata alla rendicontazione e al
+riversamento). In particolare, la specifica determina che il PSP del pagatore assicuri che
 l'importo dell'operazione venga accreditato sul conto dell’Ente
 Creditore entro la fine della giornata operativa successiva a quella
 indicata nella relativa Ricevuta Telematica, considerando che la
 giornata operativa termina alle ore 13,00 (cosiddetta “giornata
-operativa del Nodo dei Pagamenti-SPC”).
+operativa del Nodo dei Pagamenti”).
 
 Comunicazione del Giornale di Cassa
 -----------------------------------
@@ -62,18 +62,33 @@ pendenza, pertanto rimane a carico dei sistemi gestionali dell’Ente
 Creditore verificare la completa riconciliazione delle pendenze prima di
 procedere al successivo quietanzamento.
 
-Rinconciliazione delle entrate
-------------------------------
+Riconciliazione delle entrate
+-----------------------------
 
 Ciascuna entrata riconosciuta come riversamento pagoPA deve essere
 registrata dal Sistema Amministrativo Contabile in GovPay tramite
-l’operazione *POST /riconciliazioni/{idDominio}* utilizzando i dati acquisiti tramite il Giornale di Cassa. La risposta ottenuta con tale invocazione contiene  la lista delle riscossioni associate al riversamento. Con queste informazioni il Gestionale dell'ente creditore è in grado di
-effettuare la chiusura contabile di ogni pendenza di pagamento.
+l’operazione *PUT /riconciliazioni/{idDominio}/{id}* delle API Ragioneria v3,
+utilizzando i dati acquisiti tramite il Giornale di Cassa. L'identificativo
+*id* è assegnato dal chiamante e rende l'operazione idempotente:
 
-Si può consultare un esempio di invocazione delle API di Riconciliazione, corrispondente a quando descritto sopra, nella sezione :ref:`Scenario "Riconciliazione dei Pagamenti con la Tesoreria" <govpay_scenari_riconciliazione_realizzazione>`.
+-  alla prima invocazione GovPay accetta la richiesta e la elabora in modo
+   asincrono, rispondendo **202 Accepted** con l'header *Location* della
+   riconciliazione;
+-  lo stato dell'elaborazione (*IN_ELABORAZIONE*, *ACQUISITA* o *ERRORE*) e,
+   a elaborazione conclusa, la lista delle riscossioni associate al
+   riversamento si ottengono con *GET /riconciliazioni/{idDominio}/{id}*;
+   una nuova *PUT* con lo stesso *id* restituisce **200 OK** con la
+   riconciliazione.
+
+Con queste informazioni il Gestionale dell'ente creditore è in grado di
+effettuare la chiusura contabile di ogni pendenza di pagamento. Nelle API
+Ragioneria v2 l'operazione era *POST /riconciliazioni/{idDominio}*, sincrona,
+con la lista delle riscossioni direttamente nella risposta.
+
+Si può consultare un esempio di invocazione delle API Ragioneria, corrispondente a quando descritto sopra, nella sezione :ref:`Scenario "Riconciliazione dei Pagamenti con la Tesoreria" <govpay_scenari_riconciliazione_realizzazione>`.
 
 In una fase distinta, il Gestionale può effettuare la chiamata a *GET
-/riscossioni* delle API di Rendicontazione. L’operazione viene eseguita
+/riscossioni* delle API Ragioneria. L’operazione viene eseguita
 fornendo i parametri di ricerca quali:
 
 -  stato della riscossione impostato a “riscossa”
@@ -85,32 +100,40 @@ non incassate, come nel seguente esempio:
 
 .. code-block:: none
 
-    GET /riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31
+    GET /riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataA=2017-12-31T23:59:59
     HTTP 200 OK
     {
-        "numRisultati": "10",
-        "numPagine": "10",
-        "risultatiPerPagina": "1",
-        "pagina": "1",
-        "prossimiRisultati": "/riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31&pagina=2&risultatiPerpagina=1",
+        "numRisultati": 10,
+        "numPagine": 10,
+        "risultatiPerPagina": 1,
+        "pagina": 1,
+        "prossimiRisultati": "/riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataA=2017-12-31T23:59:59&pagina=2&risultatiPerPagina=1",
         "risultati":
         [
             {
-                "idDominio": "01234567890",
+                "dominio":
+                {
+                    "idDominio": "01234567890",
+                    "ragioneSociale": "Ente Creditore"
+                },
                 "iuv": "RF23567483937849450550875",
+                "idRicevuta": "100000000000902038186",
                 "iur": "1234acdc",
                 "indice": 1,
-                "pendenza": "/pendenze/01234567890/abcdef12345",
-                "idVocePendenza": "abcdef12345_1",
-                "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
+                "stato": "RISCOSSA",
+                "tipo": "ENTRATA",
                 "importo": 10.01,
-                "ibanAccredito": "IT02L1234512345123456789012",
-                "data": "2020-12-31",
-                "commissioni": 1.5,
-                "allegato":
+                "data": "2017-12-20T10:15:00",
+                "vocePendenza":
                 {
-                    "tipo": "Esito pagamento",
-                    "testo": "string"
+                    "idVocePendenza": "abcdef12345_1",
+                    "descrizione": "Sanzione CdS n. abc00000",
+                    "pendenza":
+                    {
+                        "idA2A": "GestPag",
+                        "idPendenza": "abcdef12345",
+                        "dataCaricamento": "2017-12-01"
+                    }
                 }
             }
         ]
