@@ -3,39 +3,15 @@
 Cruscotto
 =========
 
-La sezione *Cruscotto* mira a dare evidenza grafica immediata alla situazione dei pagamenti all'interno dei domini di cui si ha visibilità.
+La sezione *Cruscotto* è la pagina d'accesso della console.
 
+Prima dell'autenticazione la pagina propone i riquadri di accesso dei metodi abilitati (vedi :ref:`govpay_console`).
+Se abilitati nel file di configurazione della console ``assets/Config.js``, la pagina mostra inoltre:
 
-Area iniziale
--------------
+*  il riquadro *GovPay*, con la versione del prodotto e i collegamenti al manuale utente, alla licenza e al progetto
+   (blocco ``INFO.DOCUMENTS``, proprietà ``it.govpay.backoffice.gui.info.enabled``, attiva per default);
+*  il riquadro *Notizie*, con le note di rilascio pubblicate nel repository GitHub di GovPay
+   (blocco ``INFO.NEWS``, proprietà ``it.govpay.backoffice.gui.news.enabled``, disattiva per default).
 
-.. figure:: ../../_images/C01AreaGenerale.png
-   :align: center
-   :name: AreaInizialeCruscotto
-
-   Area iniziale Cruscotto
-
-Il sistema propone:
-*  in **rosso** gli eventi eccezionali
-*  in **grigio** gli eventi esaminati o corretti
-
-Selezionando una delle caselle si accede al dettaglio dei pagamenti rifiutati o sospesi.
-
-
-Pagamenti Rifiutati
--------------------
-
-
-.. figure:: ../../_images/C02CruscottoPagamentiRifiutati.png
-   :align: center
-   :name: CruscottoPagamentiRifiutati
-
-   Cruscotto: pagamenti rifiutati
-
-Cliccando sulla casella del cruscotto, il sistema effettua una ricerca sui pagamenti con il filtro sui pagamenti rifiutati, consentendone l'esame. Esaminare i pagamente implica che il colore della segnalazione su cruscotto viri dal rosso al grigio.
-
-
-Pagamenti Sospesi
------------------
-
-La logica è identica a quanto visto per i pagamenti rifiutati. Cliccando sulla casella del cruscotto, anche in questo caso  il sistema effettua una ricerca sui pagamenti con il filtro sui pagamenti sospesi, consentendone l'esame. La logica rimane la stessa anche per il viraggio dei colori (rosso -> grigio)
+Dalla versione 3.10 il Cruscotto non mostra più le caselle dei pagamenti rifiutati e sospesi, che dipendevano dalla
+sezione Pagamenti, non più disponibile.

@@ -18,8 +18,9 @@ L'area iniziale è composta dai seguenti elementi:
 
 
 
-È possibile scaricare un file CSV con i dati delle riscossioni, utilizzando la voce
-"Prospetto Riscossioni Attese" presente nel menu a destra sulla testata della pagina.
+Con la voce "Prospetto riscossioni attese", presente nel menu a destra sulla testata della pagina, si ottiene il report
+delle entrate previste: nella finestra *Parametri Report* si scelgono il formato (PDF, predefinito, o CSV), l'ente creditore e
+il periodo (data inizio e data fine). Se la sezione :ref:`utente_riscossioni` è abilitata, la voce si trova in quella sezione.
 
 .. figure:: ../../_images/AV02AreaGeneraleRicevuteScaricaProspettoRiscossioni.png
    :align: center
@@ -27,7 +28,13 @@ L'area iniziale è composta dai seguenti elementi:
 
    Area Generale Ricevute: Prospetto Riscossioni Attese
 
-Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio della rievuta: si noti come sia presente una sezione dedicata agli eventi di dettaglio della ricevuta stesso.
+Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio della ricevuta: si noti come sia presente una sezione dedicata agli eventi di dettaglio della ricevuta stessa.
+
+Caricamento di una ricevuta
+---------------------------
+
+Con il pulsante "+" in basso a destra si apre la finestra *Carica ricevuta*, con cui si acquisisce in GovPay una ricevuta
+telematica (RT) in formato XML. Il pulsante è disponibile agli operatori con l'autorizzazione in lettura e scrittura sulle pendenze.
 
 Dati Ricevuta
 -------------
@@ -44,7 +51,7 @@ La pagina dei dati di dettaglio della ricevuta comprende:
 
    Dettaglio della Ricevuta
 
-Con la voce di menu in alto a destra (*Scarica Ricevuta*), è possibile scaricare la ricevuta nel formato pdf:
+Con la voce di menu in alto a destra (*Stampa ricevuta*), è possibile scaricare la ricevuta nel formato pdf:
 
 .. figure:: ../../_images/P12ScaricaRicevuta.png
    :align: center

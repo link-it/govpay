@@ -20,7 +20,7 @@ dei vincoli sintattici e semantici.
    "1","idA2A", "Identificativo del gestionale responsabile della pendenza, come censito in anagrafica", "Obbligatorio"
    "2","idPendenza","Identificativo della pendenza, univoco per gestionale responsabile","Obbligatorio, max 35 caratteri"
    "3","idDominio","Codice fiscale dell'ente creditore, come censito in anagrafica","Obbligatorio"
-   "4","numeroAvviso","Identificativo dell'avviso di pagamento. Se non fornito, viene assegnato da GovPay.","Opzionale, sintassi AgID."
+   "4","numeroAvviso","Identificativo dell'avviso di pagamento. Se non fornito, viene assegnato da GovPay.","Opzionale, sintassi pagoPA."
    "5","tipoPendenza","Tipologia della pendenza, come censito in anagrafica","Opzionale, default `LIBERO`"
    "6","idUnitaOperativa","Identificativo dell'unità interna all'ente creditore beneficiaria del pagamento, come censita in anagrafica","Opzionale"
    "7","causale","Descrizione della pendenza","Obbligatoria, max 140 caratteri"
@@ -52,26 +52,26 @@ dei vincoli sintattici e semantici.
    "--","tipoContabilitaVoce*","Tipologia di codifica del capitolo di bilancio della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `ibanAccreditoVoce*`, enumerazione: [ CAPITOLO, SPECIALE, SIOPE, ALTRO ], altrimenti ignorato"
    "--","codiceContabilitaVoce*","Codice del capitolo di bilancio della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `ibanAccreditoVoce*`, altrimenti ignorato"
    "--","tipoEntrataVoce*","Riferimento alla tipologia di entrata della i-esima voce di pagamento della pendenza, censita in anagrafica","Obbligatorio in alternativa a `ibanAccreditoVoce*` o `tipoBolloVoce*`"
-   "--","tipoBolloVoce*","Tipologia di bollo della i-esima voce di pagamento della pendenza","Obbligatorio in alternativa a `ibanAccreditoVoce*` o `tipoEntrataVoce*`, enumerazione: [ 01 ] dove 01 è la Marca da Bollo Telemarica"
+   "--","tipoBolloVoce*","Tipologia di bollo della i-esima voce di pagamento della pendenza","Obbligatorio in alternativa a `ibanAccreditoVoce*` o `tipoEntrataVoce*`, enumerazione: [ 01 ] dove 01 è la Marca da Bollo Telematica"
    "--","hashBolloVoce*","Digest in base64 del documento informatico associato alla marca da bollo della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `tipoBolloVoce*`, altrimenti ignorato"
    "--","provinciaBolloVoce*","Sigla automobilistica della provincia di residenza del soggetto pagatore della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `tipoBolloVoce*`, altrimenti ignorato. Due caratteri maiuscoli."
-   "82","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione.","Opzionale, se non impostata si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibilita"
-   "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
-   "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
-   "85","numeroRata","Numero di rata in caso di pagamento rateale. In caso di pagamenti con soglia temporale, usare la sintassi `ENTROxxx` o `OLTRExxx` dove `xxx` è il numero di giorni previsto.","Opzionale, non valorizzare per il pagamento in soluzione unica."
-   "86","linguaSecondaria","Indica la seconda lingua da affiancare all'italiano nella stampa dell'avviso di pagamento, le lingue supportate sono Sloveno (`sl`), Inglese (`en`), Tedesco (`de`) e Francese (`fr`). Il valore speciale `false` forza la stampa nella sola lingua italiana. Opzionalmente è possibile indicare anche la traduzione della causale separandola con il carattere | (pipe).","Opzionale, Enumerazione: [ de, en, fr, sl, false ], non valorizzare per gli avvisi di pagamento stampati solo in italiano."
+   "83","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione.","Opzionale, se non impostata si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibita"
+   "84","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
+   "85","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
+   "86","numeroRata","Numero di rata in caso di pagamento rateale. In caso di pagamenti con soglia temporale, usare la sintassi `ENTROxxx` o `OLTRExxx` dove `xxx` è il numero di giorni previsto.","Opzionale, non valorizzare per il pagamento in soluzione unica."
+   "87","linguaSecondaria","Indica la seconda lingua da affiancare all'italiano nella stampa dell'avviso di pagamento, le lingue supportate sono Sloveno (`sl`), Inglese (`en`), Tedesco (`de`) e Francese (`fr`). Il valore speciale `false` forza la stampa nella sola lingua italiana. Opzionalmente è possibile indicare anche la traduzione della causale separandola con il carattere | (pipe).","Opzionale, Enumerazione: [ de, en, fr, sl, false ], non valorizzare per gli avvisi di pagamento stampati solo in italiano."
    
-I campi che determinano una voce di pagamento della pendenza si ripetono
+I campi che determinano una voce di pagamento della pendenza (11 colonne per voce) si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:
 idVoce1, importoVoce1, ...., idVoce2, importoVoce2, ... etc...
+Le voci occupano le colonne dalla 28 alla 82: la prima voce le colonne 28-38, la seconda le colonne 39-49 e così via fino alla quinta.
 
 Si suggerisce di valorizzare il parametro `dataAvvisatura` in modo tale
 da avere l'opportunità di intervenire prima dell'avvisatura al cittadino 
 in caso di caricamenti indesiderati
 
 Si precisa che, per vincoli pagoPA, sono consentite un massimo di 5 voci
-di pagamento per una pendenza e che sono pagabili ad iniziativa PSP solo
-pendenze con una sola voce di pagamento.   
+di pagamento per una pendenza.
 
 Annullamento di una pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
