@@ -15,18 +15,23 @@ La realizzazione di questo scenario prevede le seguenti tre fasi:
 
 3. La visualizzazione dell'esito di pagamento e download della ricevuta telematica
 
+Le invocazioni verso GovPay e govpay-portal-api descritte di seguito sono raccolte anche nella
+collection Postman :download:`dovuto.postman_collection.json`, da adattare al proprio ambiente
+valorizzando le variabili della collection (host, credenziali dell'applicazione, ente creditore).
+
 
 Caricamento della Pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
-invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_.
+invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API Pendenze v2 (`specifica OpenAPI <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`__).
 
-Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
+Di seguito un esempio di invocazione. Il base path ``/govpay-api-pendenze`` è quello del dispiegamento su Tomcat;
+nel dispiegamento EAR è ``/govpay/backend/api/pendenze`` (vedi :ref:`integrazione_api`).
 
-.. code-block:: json
+.. code-block:: text
    :caption: Richiesta
 
-    PUT /govpay/backend/api/pendenze/rs/basic/v2/pendenze/A2A-DEMO/987
+    PUT https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/A2A-DEMO/987
     Authorization: Basic aWRBMkEtZGVtbzpwYXNzd29yZA==
     Content-type: application/json
     Accept: application/json
@@ -42,8 +47,8 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
       },
       "importo": 105.01,
       "tassonomiaAvviso": "Multe e sanzioni amministrative",
-      "dataValidita": "2019-12-31",
-      "dataScadenza": "2020-12-31",
+      "dataValidita": "2026-12-31",
+      "dataScadenza": "2027-12-31",
       "voci": [
         {
           "idVocePendenza": "987-SANZIONE",
@@ -64,7 +69,7 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
       ]
     }
 
-.. code-block:: json
+.. code-block:: text
    :caption: Risposta
 
     HTTP 201 CREATED
@@ -79,21 +84,26 @@ Consultazione della Posizione Debitoria
 
 Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
 pendenze di cui è debitore per avviarne il pagamento.
-A tale scopo il componente `GovPay API Portal <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay-portal-api/refs/heads/main/src/main/resources/openapi.yaml&nocors>`_
-espone le API che consentono di reperire la posizione debitoria di un cittadino
-ed avviarne il pagamento utilizzando
+A tale scopo il componente *govpay-portal-api* (`specifica OpenAPI <https://github.com/link-it/govpay-portal-api/blob/3.10.x/src/main/resources/openapi.yaml>`__)
+espone le API che consentono di reperire la posizione debitoria di un cittadino,
+il cui pagamento viene poi avviato dal portale tramite il Checkout di pagoPA.
 
-La prima operazione utilizzata è `GET /pendenze` applicando un filtro per
-stato delle pendenze consente all'utente autenticato di ricevere in risposta la propria posizione debitoria.
+Le operazioni sulla posizione debitoria sono riservate al cittadino autenticato: govpay-portal-api
+non gestisce direttamente SPID o CIE, ma riceve le richieste da un reverse proxy che autentica l'utente
+e ne inoltra il codice fiscale nell'header ``X-SPID-FISCALNUMBER``. Il servizio risponde alla radice:
+il prefisso ``/govpay-portal-api`` usato negli esempi è quello aggiunto dal reverse proxy.
 
-.. code-block:: json
+La prima operazione utilizzata è `GET /pendenze/{idDominio}` che, applicando un filtro per
+stato delle pendenze, consente all'utente autenticato di ricevere in risposta la propria posizione debitoria.
+
+.. code-block:: text
    :caption: Richiesta
 
     GET /govpay-portal-api/pendenze/01234567890?stato=NON_ESEGUITA
-    Accept: application/json"
-    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    X-SPID-FISCALNUMBER: RSSMRA30A01H501I
 
-.. code-block:: json
+.. code-block:: text
    :caption: Risposta
 
     HTTP 200 OK
@@ -132,8 +142,7 @@ stato delle pendenze consente all'utente autenticato di ricevere in risposta la 
           "importo": 105.01,
           "dataCaricamento": "2026-04-01",
           "dataValidita": "2026-12-31",
-          "dataScadenza": "2026-12-31",
-          "tassonomiaAvviso": "Multe e sanzioni amministrative",
+          "dataScadenza": "2027-12-31",
           "UUID": "a1b2c3d4e5f6...",
           "voci": [
             {
@@ -150,7 +159,7 @@ stato delle pendenze consente all'utente autenticato di ricevere in risposta la 
               "indice" : 2,
               "tassonomiaPagoPA": "9/CONTRIBUTO"
             }
-          ]"/pagamenti?idA2A=A2A-DEMO&idPendenza=987"
+          ]
         }
       ]
     }
@@ -160,14 +169,14 @@ Esecuzione del pagamento
 
 Il portale, tramite le informazioni fornite da GovPay o presenti in archivi propri,
 consente al cittadino di predisporre un carrello di pagamenti dovuti.
-Una volta terminato, il portale avvia il pagamento utilizzando le `API Checkout di pagoPA <https://docs.pagopa.it/sanp/appendici/primitive#ec-checkout-api>`_
+Una volta terminato, il portale avvia il pagamento utilizzando le API Checkout per gli Enti Creditori descritte nelle `specifiche pagoPA (SANP) <https://docs.pagopa.it/sanp>`__:
 
-.. code-block:: json
+.. code-block:: text
    :caption: Richiesta
 
     POST https://api.platform.pagopa.it/checkout/ec/v1/carts
     Accept: application/json
-    Content-type: application/json"
+    Content-type: application/json
 
     {
       "emailNotice": "mario.rossi@email.it",
@@ -181,19 +190,19 @@ Una volta terminato, il portale avvia il pagamento utilizzando le `API Checkout 
         }
       ],
       "returnUrls": {
-        "returnOkUrl": "https://portale-ente.it/pagamento/esito?esito=OK",
-        "returnErrorUrl": "https://portale-ente.it/pagamento/esito?esito=ERROR",
-        "returnCancelUrl": "https://portale-ente.it/pagamento/esito?esito=CANCEL"
+        "returnOkUrl": "https://portale.example.org/pagamento/esito?esito=OK",
+        "returnErrorUrl": "https://portale.example.org/pagamento/esito?esito=ERROR",
+        "returnCancelUrl": "https://portale.example.org/pagamento/esito?esito=CANCEL"
       }
     }
 
-.. code-block:: json
+.. code-block:: text
    :caption: Risposta
 
     HTTP 302 Found
     Location: https://checkout.pagopa.it/...
 
-In risposta alla chiamata il browser portare l'utente sulla pagina del Checkout dedicata alla scelta del PSP.
+In risposta alla chiamata il browser porta l'utente sulla pagina del Checkout dedicata alla scelta del PSP.
 
 Visualizzazione Esito del Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -203,14 +212,14 @@ in base all'esito del pagamento alla URL fornita all'interno del campo returnUrl
 
 Il portale mostra la posizione debitoria aggiornata tramite l'operazione `GET /pendenze/01234567890?stato=ESEGUITA`:
 
-.. code-block:: json
+.. code-block:: text
    :caption: Richiesta
 
     GET /govpay-portal-api/pendenze/01234567890?stato=ESEGUITA
-    Accept: application/json"
-    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    X-SPID-FISCALNUMBER: RSSMRA30A01H501I
 
-.. code-block:: json
+.. code-block:: text
    :caption: Risposta
 
     HTTP 200 OK
@@ -249,9 +258,8 @@ Il portale mostra la posizione debitoria aggiornata tramite l'operazione `GET /p
           "importo": 105.01,
           "dataCaricamento": "2026-04-01",
           "dataValidita": "2026-12-31",
-          "dataScadenza": "2026-12-31",
+          "dataScadenza": "2027-12-31",
           "dataPagamento": "2026-04-10",
-          "tassonomiaAvviso": "Multe e sanzioni amministrative",
           "UUID": "a1b2c3d4e5f6...",
           "voci": [
             {
@@ -268,20 +276,20 @@ Il portale mostra la posizione debitoria aggiornata tramite l'operazione `GET /p
               "indice" : 2,
               "tassonomiaPagoPA": "9/CONTRIBUTO"
             }
-          ]"/pagamenti?idA2A=A2A-DEMO&idPendenza=987"
+          ]
         }
       ]
     }
 
 Infine è possibile scaricare la ricevuta di pagamento tramite l'operazione `GET /pendenze/01234567890/301340000000123456/ricevuta`:
 
-.. code-block:: json
+.. code-block:: text
    :caption: Richiesta
 
     GET /govpay-portal-api/pendenze/01234567890/301340000000123456/ricevuta
-    Accept: application/pdf"
+    Accept: application/pdf
 
-.. code-block:: json
+.. code-block:: text
    :caption: Risposta
 
     HTTP 200 OK

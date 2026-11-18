@@ -14,7 +14,7 @@ La descrizione dello scenario si compone dei seguenti elementi:
 
     1. La :ref:`govpay_scenari_riconciliazione_realizzazione`, che descrive l'integrazione tra il gestionale di contabilità, che effettua la riconciliazione, e GovPay:
 
-        - La riconciliazione degli incassi in banca tesoriera avviene con la chiamata a *POST /riconciliazioni/{idDominio}*
+        - La riconciliazione degli incassi in banca tesoriera avviene con la chiamata a *PUT /riconciliazioni/{idDominio}/{id}* delle API Ragioneria v3, seguita dalla consultazione dell'esito con *GET /riconciliazioni/{idDominio}/{id}*
 
     2. La :ref:`govpay_scenari_riconciliazione_configurazione` di GovPay per supportare lo scenario descritto.
 

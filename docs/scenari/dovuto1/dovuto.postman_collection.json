@@ -30,101 +30,49 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"idTipoPendenza\": \"SANZIONE\",\n  \"idDominio\": \"01234567890\",\n  \"causale\": \"Sanzione CdS n. abc00000\",\n  \"soggettoPagatore\": {\n    \"tipo\": \"F\",\n    \"identificativo\": \"PSSMRA30A01H501I\",\n    \"anagrafica\": \"Mario Possi\"\n  },\n  \"importo\": 100.01,\n  \"tassonomiaAvviso\": \"Multe e sanzioni amministrative\",\n  \"dataValidita\": \"2019-12-31\",\n  \"dataScadenza\": \"2030-12-31\",\n  \"voci\": [\n    {\n      \"idVocePendenza\": \"1\",\n      \"importo\": 100.01,\n      \"descrizione\": \"Sanzione per divieto di sosta\",\n      \"ibanAccredito\": \"IT02L1234500000999990000001\",\n      \"tipoContabilita\": \"ALTRO\",\n      \"codiceContabilita\": \"ABC\"\n    }\n  ]\n}"
+							"raw": "{\n  \"idTipoPendenza\": \"SANZIONE\",\n  \"idDominio\": \"01234567890\",\n  \"causale\": \"Sanzione CdS n. abc00000\",\n  \"soggettoPagatore\": {\n    \"tipo\": \"F\",\n    \"identificativo\": \"PSSMRA30A01H501I\",\n    \"anagrafica\": \"Mario Possi\"\n  },\n  \"importo\": 100.01,\n  \"tassonomiaAvviso\": \"Multe e sanzioni amministrative\",\n  \"dataValidita\": \"2026-12-31\",\n  \"dataScadenza\": \"2027-12-31\",\n  \"voci\": [\n    {\n      \"idVocePendenza\": \"1\",\n      \"importo\": 100.01,\n      \"descrizione\": \"Sanzione per divieto di sosta\",\n      \"ibanAccredito\": \"IT02L1234500000999990000001\",\n      \"tipoContabilita\": \"ALTRO\",\n      \"codiceContabilita\": \"ABC\"\n    }\n  ]\n}"
 						},
 						"url": "{{pendenze-baseurl}}/rs/basic/v2/pendenze/{{idGestionale}}/{{idPendenza}}"
 					},
 					"response": []
 				},
 				{
-					"name": "GET Posizione Debitoria",
+					"name": "GET Posizione Debitoria (govpay-portal-api)",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": {
-								"password": "{{passwordGestionale}}",
-								"username": "{{usernameGestionale}}"
-							}
-						},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{pagamenti-baseurl}}/rs/basic/v2/pendenze?idDebitore=PSSMRA30A01H501I&stato=NON_ESEGUITA",
-							"host": [
-								"{{pagamenti-baseurl}}"
-							],
-							"path": [
-								"rs",
-								"basic",
-								"v2",
-								"pendenze"
-							],
-							"query": [
-								{
-									"key": "idDebitore",
-									"value": "PSSMRA30A01H501I"
-								},
-								{
-									"key": "stato",
-									"value": "NON_ESEGUITA"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST Pagamento",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"pm.collectionVariables.set(\"idSession\", jsonData.idSession);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": {
-								"password": "{{passwordGestionale}}",
-								"username": "{{usernameGestionale}}"
-							}
-						},
-						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"name": "Content-Type",
+								"key": "Accept",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-SPID-FISCALNUMBER",
+								"value": "{{codiceFiscaleDebitore}}",
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"pendenze\": [\n    {\n      \"idA2A\": \"{{idGestionale}}\",\n      \"idPendenza\": \"{{idPendenza}}\"\n    }\n  ]\n}"
-						},
-						"url": "{{pagamenti-baseurl}}/rs/basic/v2/pagamenti"
+						"url": "{{portal-baseurl}}/pendenze/{{idDominio}}?stato=NON_ESEGUITA"
 					},
 					"response": []
 				},
 				{
-					"name": "GET Pagamento",
+					"name": "GET Ricevuta (govpay-portal-api)",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": {
-								"password": "{{passwordGestionale}}",
-								"username": "{{usernameGestionale}}"
-							}
-						},
 						"method": "GET",
-						"header": [],
-						"url": "{{pagamenti-baseurl}}/rs/basic/v2/pagamenti/byIdSession/{{idSession}}"
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf",
+								"type": "text"
+							},
+							{
+								"key": "X-SPID-FISCALNUMBER",
+								"value": "{{codiceFiscaleDebitore}}",
+								"type": "text"
+							}
+						],
+						"url": "{{portal-baseurl}}/pendenze/{{idDominio}}/{{numeroAvviso}}/ricevuta"
 					},
 					"response": []
 				}
@@ -160,28 +108,24 @@
 	],
 	"variable": [
 		{
-			"key": "host-demo",
-			"value": "https://lab.link.it"
+			"key": "host",
+			"value": "https://govpay.example.org"
 		},
 		{
 			"key": "console-baseurl",
-			"value": "{{host-demo}}/govpay/backend/gui/backoffice"
-		},
-		{
-			"key": "pagamenti-baseurl",
-			"value": "{{host-demo}}/govpay/frontend/api/pagamento"
+			"value": "{{host}}/govpay-console"
 		},
 		{
 			"key": "pendenze-baseurl",
-			"value": "{{host-demo}}/govpay/backend/api/pendenze"
+			"value": "{{host}}/govpay-api-pendenze"
 		},
 		{
 			"key": "ragioneria-baseurl",
-			"value": "{{host-demo}}/govpay/backend/api/ragioneria"
+			"value": "{{host}}/govpay-api-ragioneria"
 		},
 		{
-			"key": "idSession",
-			"value": "1c9dc117bb57448ab8172ad086518f0a"
+			"key": "portal-baseurl",
+			"value": "{{host}}/govpay-portal-api"
 		},
 		{
 			"key": "idGestionale",
@@ -194,13 +138,28 @@
 			"type": "string"
 		},
 		{
+			"key": "idDominio",
+			"value": "01234567890",
+			"type": "string"
+		},
+		{
+			"key": "numeroAvviso",
+			"value": "301340000000123456",
+			"type": "string"
+		},
+		{
+			"key": "codiceFiscaleDebitore",
+			"value": "PSSMRA30A01H501I",
+			"type": "string"
+		},
+		{
 			"key": "usernameGestionale",
 			"value": "idA2A-demo",
 			"type": "string"
 		},
 		{
 			"key": "passwordGestionale",
-			"value": "1Password$",
+			"value": "password",
 			"type": "string"
 		}
 	]

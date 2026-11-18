@@ -39,10 +39,15 @@ Di seguito le indicazioni sulla valorizzazione dei campi:
   - **rata**: numero di rata nel caso di pendenza relativa ad una rata. Non valorizzare nel caso di pagamento in soluzione unica.
 
 Le medesime informazioni possono essere indicate anche nel caricamento pendenze tramite 
-tracciato CSV.
+tracciato CSV, con i campi **idDocumento**, **descrizioneDocumento** e **numeroRata**: per i pagamenti
+con soglia temporale, descritti più avanti, il campo **numeroRata** si valorizza con la sintassi ``ENTROxxx`` o ``OLTRExxx``,
+dove ``xxx`` è il numero di giorni (vedi :ref:`utente_avanzate_csv`).
 
 Una volta caricate le posizioni, è possibile acquisire la stampa degli avvisi
-del documento con l'operazione **GET /documenti/{idDominio}/{numeroDocumento}/avvisi**
+del documento con l'operazione **GET /documenti/{idDominio}/{numeroDocumento}/avvisi** delle API Pendenze v2,
+dove *numeroDocumento* è l'**identificativo** del documento. L'operazione accetta i parametri di query facoltativi
+**linguaSecondaria**, per la stampa bilingue (vedi :ref:`howto_bilinguismo`), e **numeriAvviso**, per limitare la stampa
+agli avvisi indicati.
 
 
 
@@ -53,7 +58,7 @@ Alcune tipologie di pendenza prevedono il pagamento in forma ridotta,
 come nel caso delle sanzioni del codice della strada. Il template degli avvisi pagoPA
 prevede l'indicazione *entro XX giorni* o *oltre XX giorni* per gestire questa casistica. 
 
-Per realizzare questo scenario è sufficiente le varie pendenze allo stesso documento come 
+Per realizzare questo scenario è sufficiente associare le varie pendenze allo stesso documento come 
 nel caso dei *Pagamenti rateizzati* visti in precedenza, utilizzando la seguente sintassi:
 
 .. code-block:: json
@@ -71,4 +76,5 @@ nel caso dei *Pagamenti rateizzati* visti in precedenza, utilizzando la seguente
     }
 
 Una volta caricate le posizioni, è possibile acquisire la stampa degli avvisi
-del documento con l'operazione **GET /documenti/{idDominio}/{numeroDocumento}/avvisi**
+del documento con l'operazione **GET /documenti/{idDominio}/{numeroDocumento}/avvisi** delle API Pendenze v2,
+come nel caso precedente.
