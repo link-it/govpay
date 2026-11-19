@@ -49,6 +49,7 @@
 				<filter token="BATCH_RECUPERO_RT_ENDPOINT_URL" value="${it.govpay.batch.recuperoRT.endpoint.url}" />
 				<filter token="BATCH_IBAN_ENDPOINT_URL" value="${it.govpay.batch.iban.endpoint.url}" />
 				<filter token="BATCH_NOTIFICA_ENDPOINT_URL" value="${it.govpay.batch.notifica.endpoint.url}" />
+				<filter token="BATCH_MAGGIOLI_ENDPOINT_URL" value="${it.govpay.batch.maggioli.endpoint.url}" />
 
 		        </filterset>
 		</copy>

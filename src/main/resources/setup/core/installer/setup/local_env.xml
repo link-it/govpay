@@ -37,4 +37,5 @@
 	<property name="it.govpay.batch.recuperoRT.endpoint.url" value="" />
 	<property name="it.govpay.batch.iban.endpoint.url" value="" />
 	<property name="it.govpay.batch.notifica.endpoint.url" value="" />
+	<property name="it.govpay.batch.maggioli.endpoint.url" value="" />
 </project>

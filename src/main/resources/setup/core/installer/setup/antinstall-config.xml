@@ -147,6 +147,7 @@
 		<checkbox property="antinstaller_batch_fdr" displayText="Batch FdR" defaultValue="false" />
 		<checkbox property="antinstaller_batch_iban" displayText="Batch Verifica IBAN" defaultValue="false" />
 		<checkbox property="antinstaller_batch_notifica" displayText="Batch Notifica Rendicontazioni" defaultValue="false" />
+		<checkbox property="antinstaller_batch_maggioli" displayText="Batch Maggioli JPPA" defaultValue="false" />
 	</page>
 
 	<page name="batchAcaConfig" type="input" displayText="Configurazione Batch ACA" ifProperty="${antinstaller_batch_aca}=true">
@@ -171,6 +172,11 @@
 
 	<page name="batchNotificaConfig" type="input" displayText="Configurazione Batch Notifica" ifProperty="${antinstaller_batch_notifica}=true">
 		<validated defaultValue="http://localhost:10009/api/batch" property="antinstaller_batch_notifica_url" displayText="Base URL" regex=".+" />
+		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
+	</page>
+
+	<page name="batchMaggioliConfig" type="input" displayText="Configurazione Batch Maggioli JPPA" ifProperty="${antinstaller_batch_maggioli}=true">
+		<validated defaultValue="http://localhost:10007/api/batch" property="antinstaller_batch_maggioli_url" displayText="Base URL" regex=".+" />
 		<comment explanatoryText="Indicare la Base URL dell'endpoint esposto dal batch." />
 	</page>
 
