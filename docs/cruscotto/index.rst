@@ -75,7 +75,6 @@ Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'u
 A seguire sono elencate le sezioni del menu di navigazione, che possono variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
 * *Pendenze*: sezione di consultazione delle pendenze di pagamento in carico ai debitori.
-* *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
 * *Ricevute*: sezione di consultazione delle ricevute di pagamento.
 * *Riscossioni*: sezione di consultazione delle riscossioni.
 * *Rendicontazioni*: sezione di consultazione dei flussi di rendicontazione acquisiti da pagoPA.

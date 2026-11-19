@@ -12,6 +12,3 @@ Se abilitati nel file di configurazione della console ``assets/Config.js``, la p
    (blocco ``INFO.DOCUMENTS``, proprietà ``it.govpay.backoffice.gui.info.enabled``, attiva per default);
 *  il riquadro *Notizie*, con le note di rilascio pubblicate nel repository GitHub di GovPay
    (blocco ``INFO.NEWS``, proprietà ``it.govpay.backoffice.gui.news.enabled``, disattiva per default).
-
-Dalla versione 3.10 il Cruscotto non mostra più le caselle dei pagamenti rifiutati e sospesi, che dipendevano dalla
-sezione Pagamenti, non più disponibile.
