@@ -189,6 +189,7 @@ I batch esterni selezionabili sono:
 -  **Batch FdR:** acquisizione dei Flussi di Rendicontazione (FdR) da pagoPA
 -  **Batch Verifica IBAN:** verifica degli IBAN e dell'anagrafica degli Enti Creditori su pagoPA
 -  **Batch Notifica Rendicontazioni:** notifica alle applicazioni dell'ente delle rendicontazioni senza pagamento associato e, se abilitato, spedizione delle ricevute
+-  **Batch Maggioli JPPA:** notifica delle ricevute di pagamento al gateway Maggioli JPPA
 
 Per ciascun batch selezionato verrà presentata una schermata di configurazione dove inserire la **Base URL** dell'endpoint esposto dal batch.
 La schermata del **Batch Recupero RT** è sempre presentata e la sua Base URL è obbligatoria: dalla versione 3.10 il recupero delle ricevute mancanti è svolto solo da questo componente esterno.
@@ -216,14 +217,14 @@ Le Base URL proposte sono:
    * - Notifica Rendicontazioni
      - ``http://localhost:10009/api/batch``
      - ``it.govpay.batch.notifica.endpoint.url``
+   * - Maggioli JPPA
+     - ``http://localhost:10007/api/batch``
+     - ``it.govpay.batch.maggioli.endpoint.url``
 
 GovPay usa queste URL per avviare i batch e leggerne lo stato dalla sezione Manutenzione della console.
 Per ogni batch si possono impostare a mano in ``govpay.properties`` anche i timeout, in millisecondi:
 ``it.govpay.batch.<batch>.endpoint.connectionTimeout`` (predefinito 5000), ``readTimeout`` (30000)
 e ``connectionRequestTimeout`` (5000).
-
-L'installer non chiede la URL del batch **govpay-maggioli-jppa**: se il componente è in uso,
-va impostata a mano in ``govpay.properties`` con la proprietà ``it.govpay.batch.maggioli.endpoint.url``.
 
 .. figure:: ../_images/INS10_ConfigurazioneACA.png
    :alt: Pagina relativa alla configurazione del batch ACA
@@ -390,7 +391,7 @@ Per ogni dominio abilitato invia al gateway le ricevute positive arrivate dopo l
 e, se previsto, spedisce per email un tracciato con l'esito.
 
 **Configurazione in GovPay:** il connettore Maggioli JPPA del dominio (vedi :ref:`govpay_configurazione_connettori_jppa`)
-e, per l'esecuzione manuale, la proprietà ``it.govpay.batch.maggioli.endpoint.url``.
+e, per l'esecuzione manuale, la Base URL del batch indicata all'installazione (``it.govpay.batch.maggioli.endpoint.url``).
 
 govpay-gde-api
 ~~~~~~~~~~~~~~

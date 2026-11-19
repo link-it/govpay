@@ -25,11 +25,11 @@ Componenti esterni
 ------------------
 
 Alcune funzionalità sono svolte da componenti distribuiti separatamente
-dal core, descritti in :ref:`inst_componenti_aggiuntivi`. Per un
-ambiente completo servono almeno:
+dal core, descritti in :ref:`inst_componenti_aggiuntivi`. I componenti
+minimi necessari sono:
 
-- **govpay-rt-batch**: il recupero delle ricevute mancanti è svolto solo
-  da questo componente e la sua URL è richiesta dall'installer;
-- **govpay-gde-api**: il Giornale degli Eventi dei componenti esterni;
-- **govpay-console** e **govpay-console-api**, se si adotta la nuova
-  console di backoffice al posto di quella inclusa nel core.
+- **govpay-fdr-batch**: acquisizione dei flussi di rendicontazione da pagoPA;
+- **govpay-aca-batch**: invio a pagoPA delle posizioni debitorie (ACA);
+- **govpay-rt-batch**: recupero delle ricevute mancanti, svolto solo da
+  questo componente;
+- **govpay-gde-api**: il Giornale degli Eventi dei componenti esterni.
