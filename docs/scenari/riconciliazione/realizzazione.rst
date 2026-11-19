@@ -10,8 +10,7 @@ Riconciliazione Entrate
 
 L'operazione per la riconciliazione delle entrate è *PUT /riconciliazioni/{idDominio}/{id}*, dove *id* è un identificativo
 alfanumerico (al massimo 35 caratteri) assegnato dal gestionale di contabilità, che rende l'operazione idempotente.
-Qui di seguito vediamo un esempio di richiesta. Il base path ``/govpay-api-ragioneria`` è quello del dispiegamento su Tomcat;
-nel dispiegamento EAR è ``/govpay/backend/api/ragioneria`` (vedi :ref:`integrazione_api`).
+Qui di seguito vediamo un esempio di richiesta (base path delle API in :ref:`integrazione_api`).
 
 .. code-block:: text
     :caption: Registrazione di un movimento di entrata (Richiesta)

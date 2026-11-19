@@ -30,7 +30,7 @@ Distinguiamo:
 	il Gestionale Pendenze può avvisare in autonomia il pagamento generando internamente il numero avviso identificativo e non alimentare l’archivio dei pagamenti in attesa di GovPay.
 
 Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pendenza}** per caricare la pendenza con la restituzione dell'avviso di pagamento sulla risposta. Si assume che l'applicazione sia stata registrata con identificativo **GestPag** e la pendenza abbia id **ABC-001**.
-Il base path ``/govpay-api-pendenze`` è quello del dispiegamento su Tomcat; nel dispiegamento EAR è ``/govpay/backend/api/pendenze`` (vedi :ref:`integrazione_api`).
+I base path delle API sono indicati in :ref:`integrazione_api`.
 
 .. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*

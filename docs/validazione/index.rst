@@ -116,7 +116,7 @@ La directory ``workflow`` contiene i test dei flussi di pagamento completi:
 Esecuzione
 ==========
 
-I test richiedono un'istanza di GovPay in esecuzione e i servizi di supporto (simulatore del Nodo dei Pagamenti, database, server SMTP simulato); gli indirizzi sono configurati in ``integration-test/src/test/java/karate-config.js``. Per default i test usano i contesti dell'installazione su Tomcat; con ``-Dkarate.env=wildfly`` usano quelli dell'installazione su WildFly.
+I test richiedono un'istanza di GovPay in esecuzione e i servizi di supporto (simulatore del Nodo dei Pagamenti, database, server SMTP simulato); gli indirizzi sono configurati in ``integration-test/src/test/java/karate-config.js``.
 
 Per eseguire l'intera testsuite:
 
