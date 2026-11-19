@@ -5,7 +5,7 @@ GovPay
 
 GovPay è una piattaforma open source (GPL v3), che implementa il protocollo di dialogo tra Enti, Intermediari o Partner Tecnologici con il Nodo dei Pagamenti del progetto pagoPA.
 
-GovPay gestisce in autonomia la comunicazione con il Nodo dei Pagamenti, sollevando da questo compito gli applicativi verso i quali sono esposte apposite API di integrazione; nel contempo supporta la gestione dell’intero ciclo di vita della Posizione Debitoria e dell'Archivio dei Pagamenti in Attesa.
+GovPay gestisce in autonomia la comunicazione con il Nodo dei Pagamenti, sollevando da questo compito gli applicativi verso i quali sono esposte apposite API di integrazione; nel contempo supporta la gestione dell’intero ciclo di vita della Posizione Debitoria, compresa la sua pubblicazione nell'Archivio Centralizzato degli Avvisi (ACA) di pagoPA tramite il servizio GPD (Gestione Posizioni Debitorie) e il componente govpay-aca-batch, e l'attualizzazione degli importi con le spese di notifica del servizio SEND (Servizio Notifiche Digitali) di pagoPA.
 
 GovPay, in qualità di nodo accentratore dei flussi pagoPA dei domini gestiti, consente l'accesso agli operatori dell'ente per la configurazione e il monitoraggio tramite un cruscotto di gestione web-based.
 
@@ -15,9 +15,11 @@ La documentazione di GovPay consente agli utenti di affrontare le diverse fasi d
 
 - :ref:`govpay_contesto` - Un inquadramento generale del contesto di attuazione
 
+- :ref:`govpay_validazione` - Le verifiche di sicurezza e di qualità a cui è sottoposta ogni versione
+
 - :ref:`govpay_installazione` - Il processo di installazione e dispiegamento del prodotto nell'ambiente dell'ente
 
-- :ref:`govpay_console` - Le funzionalità disponibili nel cruscotto grafico govpayConsole, ripartite in:
+- :ref:`govpay_console` - Le funzionalità disponibili nel cruscotto grafico GovPay Console incluso nel core (per la nuova console di backoffice, distribuita come componente separato, si vedano i README di `govpay-console <https://github.com/link-it/govpay-console>`_ e `govpay-console-api <https://github.com/link-it/govpay-console-api>`_), ripartite in:
 
     * :ref:`govpay_configurazione` - Operazioni di configurazione del prodotto a carico degli amministratori del sistema
 

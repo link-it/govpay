@@ -5,9 +5,10 @@ Processo di validazione
 
 Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicurezza al fine di assicurarne la stabilità e l’assenza di vulnerabilità note:
 
-- Static Code Analysis: identifica possibili vulnerabilità all’interno del codice sorgente utilizzando gli strumenti `SpotBugs <https://spotbugs.github.io/>`_ e `Sonarqube <https://www.sonarsource.com/products/sonarqube/>`_;
-- Dynamic Analysis: cerca vulnerabilità del software durante l’effettiva esecuzione del prodotto. L’analisi viene eseguita attraverso l’esecuzione di estese batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_;
-- Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check </https://owasp.org/www-project-dependency-check/>`_;
+- Static Code Analysis: identifica possibili vulnerabilità all’interno del codice sorgente utilizzando gli strumenti `SpotBugs <https://spotbugs.github.io/>`_ e `SonarCloud (SonarQube Cloud) <https://sonarcloud.io/>`_, con quality gate bloccante e copertura del codice misurata con `JaCoCo <https://www.jacoco.org/jacoco/>`_ durante i test di integrazione;
+- Dynamic Analysis: cerca vulnerabilità del software durante l’effettiva esecuzione del prodotto, con una scansione DAST delle applicazioni web in esecuzione tramite `OWASP ZAP <https://www.zaproxy.org/>`_; il funzionamento del prodotto è verificato da estese batterie di test funzionali realizzate con `Karate <https://github.com/karatelabs/karate>`_ (vedi :ref:`govpay_validazione_testsuite`);
+- Accessibilità: verifica dell'accessibilità delle applicazioni web in esecuzione con lo strumento gov-a11y;
+- Third Party Dependency Analysis: assicura che tutte le librerie terza parte utilizzate non siano soggette a vulnerabilità di sicurezza note, utilizzando il tool `OWASP Dependency-Check <https://owasp.org/www-project-dependency-check/>`_;
 - OSV Analysis: verifica le dipendenze del progetto rispetto al database `OSV <https://osv.dev/>`_ tramite `OSV-Scanner <https://github.com/google/osv-scanner>`_, identificando vulnerabilità note nelle librerie terza parte utilizzate.
 
 Le verifiche sono eseguite automaticamente attraverso due sistemi di Continuous Integration:
@@ -15,24 +16,31 @@ Le verifiche sono eseguite automaticamente attraverso due sistemi di Continuous 
 Pipeline GitHub Actions
 ***********************
 
-La `pipeline GitHub Actions <https://github.com/link-it/govpay/actions>`_ viene eseguita ad ogni push e pull request sul repository ed effettua le seguenti analisi:
+La `pipeline GitHub Actions <https://github.com/link-it/govpay/actions>`_ viene eseguita ad ogni push sul repository e ad ogni pull request verso il branch `master` e le linee di manutenzione (branch `x.y.x`) ed effettua le seguenti analisi:
 
-- **Build e OWASP Dependency-Check**: compilazione del progetto con analisi delle dipendenze tramite OWASP Dependency-Check, con consultazione dei database NVD e OSS Index;
+- **Build e OWASP Dependency-Check**: compilazione del progetto con analisi delle dipendenze tramite OWASP Dependency-Check, con consultazione del database NVD (l'analizzatore OSS Index è disattivato per default, proprietà Maven ``owasp.ossindex.analyzer.enabled``). Il database locale di OWASP Dependency-Check viene aggiornato ogni giorno da un workflow dedicato;
 - **SpotBugs**: analisi statica del codice sorgente con il plugin `FindSecBugs <https://find-sec-bugs.github.io/>`_ per l'identificazione di vulnerabilità di sicurezza;
 - **OSV Scan**: scansione delle dipendenze rispetto al database OSV tramite `OSV-Scanner <https://github.com/google/osv-scanner>`_;
-- **License Analysis**: verifica delle licenze delle dipendenze terza parte per garantire la compatibilità con la licenza del progetto.
+- **License Analysis**: verifica delle licenze delle dipendenze terza parte per garantire la compatibilità con la licenza del progetto;
+- **SBOM e Dependency-Track**: generazione della Software Bill of Materials in formato `CycloneDX <https://cyclonedx.org/>`_ e, per i tag, il branch `master` e le linee di manutenzione, caricamento su `Dependency-Track <https://dependencytrack.org/>`_ per il monitoraggio continuo delle vulnerabilità;
+- **Scansione delle immagini Docker**: le immagini Docker costruite dalla pipeline sono analizzate con `Trivy <https://trivy.dev/>`_ e `Grype <https://github.com/anchore/grype>`_ prima della pubblicazione; la presenza di vulnerabilità CRITICAL o HIGH con correzione disponibile, rilevate da Trivy, blocca la pubblicazione dell'immagine.
 
-I report prodotti dalle analisi vengono raccolti come artifact della pipeline e, in caso di rilascio (tag), inclusi nello ZIP allegato alla GitHub Release.
+Sulle pull request viene inoltre validato il file ``publiccode.yml`` del repository.
+
+I report prodotti dalle analisi vengono raccolti come artifact della pipeline e, in caso di rilascio (tag), inclusi nello ZIP dei report allegato alla GitHub Release, insieme allo SBOM; i report della scansione delle immagini Docker sono allegati alla stessa release.
 
 Pipeline Jenkins
 ****************
 
-Il sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_ esegue le verifiche ad ogni modifica del codice sul branch `master` ed effettua le seguenti analisi:
+Il sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/job/govpay/>`_ esegue le verifiche ad ogni modifica del codice ed effettua le seguenti analisi:
 
 - **SpotBugs con FindSecBugs**: analisi statica del codice sorgente per l'identificazione di vulnerabilità;
-- **Sonarqube**: analisi approfondita della qualità del codice e delle vulnerabilità;
-- **Dynamic Analysis**: esecuzione delle batterie di test di integrazione realizzate con `Karate <https://github.com/karatelabs/karate>`_;
-- **OWASP Dependency-Check**: analisi delle dipendenze terza parte per vulnerabilità note.
+- **OWASP Dependency-Check**: analisi delle dipendenze terza parte per vulnerabilità note;
+- **Test di integrazione**: esecuzione delle batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_ (vedi :ref:`govpay_validazione_testsuite`), con misura della copertura del codice tramite JaCoCo;
+- **OWASP ZAP**: scansione DAST della console di gestione inclusa nel core, della nuova console di backoffice e del portale dei pagamenti in esecuzione;
+- **Accessibilità**: verifica dell'accessibilità delle stesse applicazioni web con gov-a11y;
+- **SonarCloud**: analisi della qualità del codice e delle vulnerabilità, con la copertura misurata durante i test di integrazione e attesa dell'esito del quality gate;
+- **Raccolta delle evidenze**: i report dei test Karate, di SpotBugs e di OWASP Dependency-Check sono archiviati sul sistema di Continuous Integration, distinti per branch, versione e commit verificati.
 
 Falsi positivi
 **************
@@ -64,7 +72,7 @@ file name: openspcoop2_utils-crypt-3.2.1.jar
 
 La vulnerabilità rilevata si riferisce all'utilizzo dell'utility 'fredsmith' nel processamento del file 'screenshot_sync' del componente 'Filename Handler'.
 
-La libreria in questione openspcoop2_utils-crypt non contiene il componente indicato, inoltre non viene utilizzata a runtime ma solo per l'esecuzione dell'installer.
+La segnalazione riguarda la versione 3.2.1 della libreria inclusa nell'installer. La libreria openspcoop2_utils-crypt non contiene il componente indicato.
 
 CVE-2025-10492
 ==============
@@ -78,688 +86,55 @@ Per quanto riguarda i dati di input si tratta sempre di dati interni a GovPay.
 Per i motivi descritti sopra si ritiene la vulnerabilità un falso positivo.
 
 
+.. _govpay_validazione_testsuite:
+
 Test di copertura funzionale
 ****************************
 
-Di seguito le funzionalità del prodotto ed i test che ne verificano il corretto funzionamento
+Il corretto funzionamento del prodotto è verificato dalla testsuite di integrazione realizzata con `Karate <https://github.com/karatelabs/karate>`_, il cui codice è consultabile nella directory `integration-test/src/test/java/test <https://github.com/link-it/govpay/tree/3.10.x/integration-test/src/test/java/test>`_ del repository.
 
-Integrazione AppIO
-~~~~~~~~~~~~~~~~~~
+Ogni test è descritto in un file ``.feature``; i test sono raggruppati per area in directory, ciascuna con una classe JUnit (``*Test.java``) che esegue le feature della propria directory e delle sottodirectory e avvia un servizio simulato dell'ente sulla porta 8888.
 
-* Notifica avviso pagoPA
-    * test.api.appio.avviso_pagamento
-* Notifica ricevuta
-    * test.api.appio.notifica_ricevuta
-    * test.api.appio.notifica_ricevuta_pagamento_no_rpt
+Aree della testsuite
+====================
 
-API Backoffice
-~~~~~~~~~~~~~~
+La directory ``api`` contiene i test delle API esposte e invocate da GovPay:
 
-* Lettura applicazioni
-    * test.api.backoffice.v1.applicazioni.get.applicazioni-find-byMetadatiPaginazione
-* Modifica applicazioni
-    * test.api.backoffice.v1.applicazioni.patch.applicazioni-patch-password
-    * test.api.backoffice.v1.applicazioni.put.applicazioni-put
-    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-password
-    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-semantica
-    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-sintassi
-* Modifica impostazioni sistema
-    * test.api.backoffice.v1.configurazione.patch.configurazione-appIOBatch
-    * test.api.backoffice.v1.configurazione.patch.configurazione-avvisaturaAppIO
-    * test.api.backoffice.v1.configurazione.patch.configurazione-avvisaturaMail
-    * test.api.backoffice.v1.configurazione.patch.configurazione-giornaleEventi
-    * test.api.backoffice.v1.configurazione.patch.configurazione-giornaleEventi-servizioGDE
-    * test.api.backoffice.v1.configurazione.patch.configurazione-hardening
-    * test.api.backoffice.v1.configurazione.patch.configurazione-mailBatch
-    * test.api.backoffice.v1.configurazione.patch.configurazione-tracciatoCSV
-    * test.api.backoffice.v1.configurazione.post.configurazione-sintassi
-* Ricerca e lettura Enti Creditori
-    * test.api.backoffice.v1.domini.get.domini-find-byIdDominio
-    * test.api.backoffice.v1.domini.get.domini-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.domini.get.domini-find-operatore
-    * test.api.backoffice.v1.domini.get.dominio-get
-* Ricerca e lettura Entrate
-    * test.api.backoffice.v1.domini.get.entrate-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.domini.get.entrate-get
-    * test.api.backoffice.v1.entrate.get.entrate-find-byMetadatiPaginazione
-* Ricerca e lettura Conti di Accredito
-    * test.api.backoffice.v1.domini.get.iban-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.domini.get.iban-get
-* Ricerca e lettura Tipologie di pendenza
-    * test.api.backoffice.v1.domini.get.tipipendenza-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.domini.get.tipipendenza-get
-* Ricerca e lettura Unità Operative
-    * test.api.backoffice.v1.domini.get.unita-get
-    * test.api.backoffice.v1.domini.get.uo-find-byMetadatiPaginazione
-* Configurazione Enti Creditori
-    * test.api.backoffice.v1.domini.put.domini-put-connettoreGovPay
-    * test.api.backoffice.v1.domini.put.domini-put-connettoreHyperSicAPKappa
-    * test.api.backoffice.v1.domini.put.domini-put-connettoreMaggioliJPPA
-    * test.api.backoffice.v1.domini.put.domini-put-connettoreMyPivot
-    * test.api.backoffice.v1.domini.put.domini-put-connettoreSecim
-    * test.api.backoffice.v1.domini.put.domini-put-intermediato
-    * test.api.backoffice.v1.domini.put.domini-put-semantica
-    * test.api.backoffice.v1.domini.put.domini-put-sintassi
-    * test.api.backoffice.v1.domini.put.dominio-put
-* Inserimento e modifica Entrate
-    * test.api.backoffice.v1.domini.put.entrate-put
-    * test.api.backoffice.v1.domini.put.entrate-put-semantica
-    * test.api.backoffice.v1.domini.put.entrate-put-sintassi
-    * test.api.backoffice.v1.entrate.put.entrate-put
-    * test.api.backoffice.v1.entrate.put.entrate-put-sintassi
-* Inserimento e modifica Conti di Accredito
-    * test.api.backoffice.v1.domini.put.iban-put
-    * test.api.backoffice.v1.domini.put.iban-put-sintassi
-* Inserimento e modifica Tipologie di pendenza
-    * test.api.backoffice.v1.domini.put.tipipendenza-put
-    * test.api.backoffice.v1.domini.put.tipipendenza-put-semantica
-    * test.api.backoffice.v1.domini.put.tipipendenza-put-sintassi
-* Inserimento e modifica Unità Operative
-    * test.api.backoffice.v1.domini.put.unita-put
-    * test.api.backoffice.v1.domini.put.unita-put-sintassi
-* Ricerca e consultazione Eventi del Giornale degli Eventi
-    * test.api.backoffice.v1.eventi.eventi-interfaccia-apibackoffice-addPendenza
-    * test.api.backoffice.v1.eventi.eventi-interfaccia-apipendenze-addPendenza
-    * test.api.backoffice.v1.eventi.eventi-interfaccia-autorizzazione
-    * test.api.backoffice.v1.eventi.eventi-interfaccia-get-avviso
-    * test.api.backoffice.v1.eventi.eventi-interfaccia-get-avviso-api-v2
-    * test.api.backoffice.v1.eventi.get.eventi-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.eventi.get.eventi-find-sintassi
-    * test.api.backoffice.v1.eventi.pagopa.eventi-interfaccia-nodoInviaCarrelloRPT
-    * test.api.backoffice.v1.eventi.pagopa.eventi-interfaccia-nodoInviaRPT
-    * test.api.backoffice.v1.eventi.pagopa.eventi-interfaccia-paaAttivaRPT
-    * test.api.backoffice.v1.eventi.pagopa.eventi-interfaccia-paaVerificaRPT
-    * test.api.backoffice.v1.eventi.pagopa.eventi-interfaccia-pagopa-modello3-nonprecaricato-verifica
-* Ricerca e consultazione dei Flussi di Rendicontazione
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-auth-uo
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-byEscludiObsoleti
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-byIdFlusso
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-byIuv
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-find-sintassi
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-get
-    * test.api.backoffice.v1.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-* Ricerca intermediari pagoPA
-    * test.api.backoffice.v1.intermediari.get.intermediari-find-byMetadatiPaginazione
-* Configurazione intermediari e stazioni pagoPA
-    * test.api.backoffice.v1.intermediari.put.intermediari-put
-    * test.api.backoffice.v1.intermediari.put.intermediari-put-nuoviConnettori
-    * test.api.backoffice.v1.intermediari.put.intermediari-put-recuperoRT
-    * test.api.backoffice.v1.intermediari.put.intermediari-put-recuperoRT-abilitaGDE
-    * test.api.backoffice.v1.intermediari.put.intermediari-put-sintassi
-    * test.api.backoffice.v1.intermediari.put.intermediari-put-sintassi-recuperoRT
-    * test.api.backoffice.v1.intermediari.put.stazioni-put
-    * test.api.backoffice.v1.intermediari.put.stazioni-put-semantica
-    * test.api.backoffice.v1.intermediari.put.stazioni-put-sintassi
-* Ricerca notifiche
-    * test.api.backoffice.v1.notifiche.get.notifiche-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.notifiche.get.notifiche-find-sintassi
-* Ricerca operatori console
-    * test.api.backoffice.v1.operatori.get.operatori-find-byMetadatiPaginazione
-* Censimento e modifica operatori
-    * test.api.backoffice.v1.operatori.patch.operatori-patch-password
-    * test.api.backoffice.v1.operatori.put.operatori-put
-    * test.api.backoffice.v1.operatori.put.operatori-put-password
-    * test.api.backoffice.v1.operatori.put.operatori-put-semantica
-    * test.api.backoffice.v1.operatori.put.operatori-put-sintassi
-* Consultazioni operazioni CSV
-    * test.api.backoffice.v1.operazioni.get.operazioni-find
-    * test.api.backoffice.v1.operazioni.get.operazioni-get-tracciatiGovpay-rest
-* Ricerca riscossioni
-    * test.api.backoffice.v1.pagamenti.get.pagamenti-find-byIdDominio
-    * test.api.backoffice.v1.pagamenti.get.pagamenti-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.pagamenti.get.pagamenti-find-sintassi
-    * test.api.backoffice.v1.pagamenti.get.pagamento-find-applicazioni
-    * test.api.backoffice.v1.pagamenti.get.pagamento-find-byStato
-    * test.api.backoffice.v1.pagamenti.get.pagamento-find-operatori
-    * test.api.backoffice.v1.pagamenti.get.pagamento-get-applicazioni
-    * test.api.backoffice.v1.pagamenti.get.pagamento-get-operatori
-* Ricerca pendenze
-    * test.api.backoffice.v1.pendenze.get.pendenze-auth-uo
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-applicazioni
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byData
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byIUV
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byIdTipoPendenza
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byMostraSpontaneiNonPagati
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-byStato
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-operatori
-    * test.api.backoffice.v1.pendenze.get.pendenze-find-sintassi
-    * test.api.backoffice.v1.pendenze.get.pendenze-get-applicazione
-    * test.api.backoffice.v1.pendenze.get.pendenze-get-multibeneficiario
-    * test.api.backoffice.v1.pendenze.get.pendenze-get-operatori
-* Inserimento e modifica pendenze
-    * test.api.backoffice.v1.pendenze.patch.pendenza-patch-annullamento
-    * test.api.backoffice.v1.pendenze.post.pendenza-post-inoltro
-    * test.api.backoffice.v1.pendenze.post.pendenza-post-trasformazione
-    * test.api.backoffice.v1.pendenze.post.pendenza-post-trasformazione-uo
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-aggiornamento
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-aggiornamento-dominio
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-aggiornamento-dominio-segregationCode
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-aggiornamento-stazione
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-allegati
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-autorizzazione
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-campiOpzionali
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-contabilita
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-datiAllegati
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-documento
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-iuv-custom
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-metadata
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-monovoce
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-multibeneficiario
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-multivoce
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-promemoria
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-promemoria-quietanza-pagamento
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-proprieta
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-semantica
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-sintattica
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-smtp
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-tipoPendenza
-    * test.api.backoffice.v1.pendenze.put.pendenza-put-unico-endpoint
-* Lettura profilo utente chiamante
-    * test.api.backoffice.v1.profilo.get.get-profilo
-* Modifica password utente chiamante
-    * test.api.backoffice.v1.profilo.patch.profilo-patch-password
-* Ricerca promemoria
-    * test.api.backoffice.v1.promemoria.get.promemoria-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.promemoria.get.promemoria-find-sintassi
-* Lettura dati di quadreatura Rendicontazioni e Riscossioni
-    * test.api.backoffice.v1.quadrature.get.quadrature-rendicontazioni-find-sintassi
-    * test.api.backoffice.v1.quadrature.get.quadrature-riscossioni-find-sintassi
-    * test.api.backoffice.v1.rendicontazioni.get.rendicontazioni-find-sintassi
-    * test.api.backoffice.v1.reportistiche.get.reportistiche-entrate-previste-find-sintassi
-* Ricerca e lettura riconciliazioni
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazione-applicazione-get
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazione-applicazione-getbyTipoRiscossione
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazione-find
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazione-operatore-get
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazione-operatore-noauth-get
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-byIdFlusso
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-byIuv
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-bySct
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-byStato
-    * test.api.backoffice.v1.riconciliazioni.get.riconciliazioni-find-sintassi
-* Registrazione riconciliazioni contabili
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-autorizzazione
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-cumulativa
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-cumulativa-ricercaFlussiCaseInsensitive
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-mbt
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-semantica
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-senza-rpt
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-singola
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-sintassi
-    * test.api.backoffice.v1.riconciliazioni.post.riconciliazione-tari-tefa
-* Acquisizione ricevute di pagamento
-    * test.api.backoffice.v1.ricevute.post.ricevute-post-modellounico
-    * test.api.backoffice.v1.ricevute.post.ricevute-post-modellounico-v2
-    * test.api.backoffice.v1.ricevute.post.ricevute-post-sanp230
-* Ricerca e consultazione riscossioni
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-byDirezioneDivisione
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-byIur
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-byStato
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-byTipo
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-find-sintassi
-    * test.api.backoffice.v1.riscossioni.get.riscossioni-get
-* Ricerca e consultazione transazioni di pagamento
-    * test.api.backoffice.v1.rpp.get.rpp-find
-    * test.api.backoffice.v1.rpp.get.rpp-find-applicazione
-    * test.api.backoffice.v1.rpp.get.rpp-find-byEsito
-    * test.api.backoffice.v1.rpp.get.rpp-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.rpp.get.rpp-find-byRetrocompatibilitaMessaggiPagoPAV1
-    * test.api.backoffice.v1.rpp.get.rpp-find-operatore
-    * test.api.backoffice.v1.rpp.get.rpp-find-sintassi
-    * test.api.backoffice.v1.rpp.get.rpp-get-applicazione
-    * test.api.backoffice.v1.rpp.get.rpp-get-byRetrocompatibilitaMessaggiPagoPAV1
-    * test.api.backoffice.v1.rpp.get.rpp-get-ibrida
-    * test.api.backoffice.v1.rpp.get.rpp-recuperoRT
-    * test.api.backoffice.v1.rpp.get.rpp_filtri
-* Aggiornamento di una ricevuta di pagamento
-    * test.api.backoffice.v1.rpp.patch.rpp-caricamento-rt
-* Lettura e configurazione dei ruoli operatore
-    * test.api.backoffice.v1.ruoli.get.ruoli-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.ruoli.put.ruoli-put
-    * test.api.backoffice.v1.ruoli.put.ruoli-put-sintassi
-* Monitoraggio sonde
-    * test.api.backoffice.v1.sonde.get.sonde-get
-* Lettura delle Tipologie di Pendenza
-    * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find
-    * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find-byNonAssociati
-* Inserimento e modifica delle Tipologie di Pendenza
-    * test.api.backoffice.v1.tipipendenza.put.tipipendenza-put
-    * test.api.backoffice.v1.tipipendenza.put.tipipendenza-put-sintassi
-* Ricerca e lettura dei tracciati CSV di alimentazione APA
-    * test.api.backoffice.v1.tracciati.get.tracciati-find-byMetadatiPaginazione
-    * test.api.backoffice.v1.tracciati.get.tracciati-find-byStato
-* Caricamento ed elaborazione dei tracciati CSV di alimentazione APA
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-large
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-post
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-avvisi-300
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-avvisi-importo-sei-zeri
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-big
-    * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-tipopendenza
-    * test.api.backoffice.v1.tracciati.post.tracciati-json-post
+- ``api/appio``: invio dell'avviso di pagamento e notifica della ricevuta tramite l'app IO;
+- ``api/backoffice``: API Backoffice; la directory ``v1`` verifica le API esposte dal core, la directory ``v2`` le API di backoffice v2 esposte dal componente `govpay-console-api <https://github.com/link-it/govpay-console-api>`_;
+- ``api/ente``: API Ente Creditore invocate da GovPay (v1 e v2): verifica di una pendenza a partire dall'avviso e notifica della ricevuta di pagamento;
+- ``api/pagopa``: API pagoPA esposte da GovPay: verifica dell'avviso, attivazione del pagamento e ricevuta, e risposta delle primitive dismesse;
+- ``api/pendenza``: API Pendenze (v1 e v2): creazione, modifica e consultazione delle pendenze, avvisi, profilo e richieste di pagamento;
+- ``api/ragioneria``: API Ragioneria (v1, v2 e v3): flussi di rendicontazione, riscossioni, riconciliazioni, ricevute e profilo.
 
-API Ente Creditore
-~~~~~~~~~~~~~~~~~~
+La directory ``workflow`` contiene i test dei flussi di pagamento completi:
 
-* Test di acquisizione di una pendenza da avviso
-    * test.api.ente.v1.avvisi.get.avvisi-get-semantica
-    * test.api.ente.v1.avvisi.get.avvisi-get-sintattica
-    * test.api.ente.v2.avvisi.get.avvisi-get-semantica
-    * test.api.ente.v2.avvisi.get.avvisi-get-sintattica
-* Test di notifica di un pagamento
-    * test.api.ente.v2.ricevute.put.ricevute-put
+- ``workflow/modellounico``: pagamenti con il modello unico pagoPA (pagamento eseguito, non eseguito, annullato, duplicato, scaduto, con importo errato o data di validità decorsa, verifica della sonda pagoPA, acquisizione delle ricevute in stand-in);
+- ``workflow/pubblicazione``: data di pubblicazione della pendenza;
+- ``workflow/send``: attualizzazione delle pendenze con le spese di notifica del servizio SEND.
 
-API pagoPA
-~~~~~~~~~~
+Esecuzione
+==========
 
-* Verifica chiamate pagoPA
-    * test.api.pagopa.verifica_chiamate
+I test richiedono un'istanza di GovPay in esecuzione e i servizi di supporto (simulatore del Nodo dei Pagamenti, database, server SMTP simulato); gli indirizzi sono configurati in ``integration-test/src/test/java/karate-config.js``. Per default i test usano i contesti dell'installazione su Tomcat; con ``-Dkarate.env=wildfly`` usano quelli dell'installazione su WildFly.
 
-API Pagamenti
-~~~~~~~~~~~~~
+Per eseguire l'intera testsuite:
 
-* Ricerca e verifica avvisi di pagamento
-    * test.api.pagamento.v1.avvisi.get.avvisi-find-anonimo
-    * test.api.pagamento.v1.avvisi.get.verifica-avviso-anonimo
-    * test.api.pagamento.v1.avvisi.get.verifica-avviso-basic
-    * test.api.pagamento.v1.avvisi.get.verifica-avviso-hardening
-    * test.api.pagamento.v1.avvisi.get.verifica-avviso-spid
-    * test.api.pagamento.v2.avvisi.get.avvisi-find-anonimo
-    * test.api.pagamento.v2.avvisi.get.pagamento-avviso-stazione-modificata
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-anonimo
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-basic
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-hardening
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-spid
+.. code-block:: bash
 
-* Ricerca riscossioni
-    * test.api.pagamento.v1.pagamenti.get.pagamenti-find-sintassi
-    * test.api.pagamento.v1.pagamenti.get.pagamento-find-anonimo
-    * test.api.pagamento.v1.pagamenti.get.pagamento-find-applicazione
-    * test.api.pagamento.v1.pagamenti.get.pagamento-find-byMetadatiPaginazione
-    * test.api.pagamento.v1.pagamenti.get.pagamento-find-byStato
-    * test.api.pagamento.v1.pagamenti.get.pagamento-find-spid
-    * test.api.pagamento.v1.pagamenti.get.pagamento-get-anonimo
-    * test.api.pagamento.v1.pagamenti.get.pagamento-get-applicazione
-    * test.api.pagamento.v1.pagamenti.get.pagamento-get-spid
-    * test.api.pagamento.v2.pagamenti.get.pagamenti-find-sintassi
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-anonimo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-applicazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byMetadatiPaginazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byStato
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-spid
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-anonimo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione-bollo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-spid
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-anonimo
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-disabilitato
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-domini1-segreteria
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-domini1-star
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-domini1e2-segreteria
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-non-auth
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione-star-star
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-spid
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-anonimo
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-byEsito
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-spid
-* Avvio di una transazione di pagamento
-    * test.api.pagamento.v1.pagamenti.post.causale-versamento
-    * test.api.pagamento.v1.pagamenti.post.iban-appoggio
-    * test.api.pagamento.v1.pagamenti.post.pagamento-avviso-anonimo
-    * test.api.pagamento.v1.pagamenti.post.pagamento-avviso-applicazione
-    * test.api.pagamento.v1.pagamenti.post.pagamento-avviso-spid
-    * test.api.pagamento.v1.pagamenti.post.pagamento-descrizioneCausaleRPT
-    * test.api.pagamento.v1.pagamenti.post.pagamento-errore-nodo
-    * test.api.pagamento.v1.pagamenti.post.pagamento-gw
-    * test.api.pagamento.v1.pagamenti.post.pagamento-hardening
-    * test.api.pagamento.v1.pagamenti.post.pagamento-pendenza-anonimo
-    * test.api.pagamento.v1.pagamenti.post.pagamento-pendenza-applicazione
-    * test.api.pagamento.v1.pagamenti.post.pagamento-pendenza-spid
-    * test.api.pagamento.v1.pagamenti.post.pagamento-spontaneo-anonimo
-    * test.api.pagamento.v1.pagamenti.post.pagamento-spontaneo-applicazione
-    * test.api.pagamento.v1.pagamenti.post.pagamento-spontaneo-spid
-    * test.api.pagamento.v1.pagamenti.post.pagamento-validazione-semantica
-    * test.api.pagamento.v1.pagamenti.post.pagamento-validazione-sintattica
-    * test.api.pagamento.v2.pagamenti.post.iban-appoggio
-    * test.api.pagamento.v2.pagamenti.post.pagamento-avviso-anonimo
-    * test.api.pagamento.v2.pagamenti.post.pagamento-avviso-applicazione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-avviso-spid
-    * test.api.pagamento.v2.pagamenti.post.pagamento-carrello
-    * test.api.pagamento.v2.pagamenti.post.pagamento-checkout-applicazione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-descrizioneCausaleRPT
-    * test.api.pagamento.v2.pagamenti.post.pagamento-errore-nodo
-    * test.api.pagamento.v2.pagamenti.post.pagamento-gw
-    * test.api.pagamento.v2.pagamenti.post.pagamento-hardening
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-anonimo
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-anonimo-sessione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-applicazione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-modello4-applicazione-inoltro
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-modello4-applicazione-trasformazione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-spid
-    * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-spid-sessione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-anonimo
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-applicazione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-applicazione-allegati
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-applicazione-contabilita-pendenza
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-applicazione-proprieta-pendenza
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-codiceConvenzione
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-psp
-    * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-spid
-    * test.api.pagamento.v2.pagamenti.post.pagamento-validazione-semantica
-    * test.api.pagamento.v2.pagamenti.post.pagamento-validazione-sintattica
-* Ricerca e consultazione di posizioni debitorie
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-anonimo
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-byStato
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-sintassi
-    * test.api.pagamento.v1.pendenze.get.pendenze-get-applicazione-auth
-    * test.api.pagamento.v1.pendenze.get.pendenze-get-applicazione-disabilitato
-    * test.api.pagamento.v1.pendenze.get.pendenze-get-applicazione-non-auth
-    * test.api.pagamento.v2.pendenze.get.pendenze-find-anonimo
-    * test.api.pagamento.v2.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
-    * test.api.pagamento.v2.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pagamento.v2.pendenze.get.pendenze-find-byStato
-    * test.api.pagamento.v2.pendenze.get.pendenze-find-sintassi
-    * test.api.pagamento.v2.pendenze.get.pendenze-get-applicazione-auth
-    * test.api.pagamento.v2.pendenze.get.pendenze-get-applicazione-datiAllegati
-    * test.api.pagamento.v2.pendenze.get.pendenze-get-applicazione-disabilitato
-    * test.api.pagamento.v2.pendenze.get.pendenze-get-applicazione-non-auth
-    * test.api.pagamento.v2.pendenze.get.pendenze-getByAvviso-anonimo
-    * test.api.pagamento.v2.pendenze.get.pendenze-getByAvviso-applicazione
-    * test.api.pagamento.v2.pendenze.get.pendenze-getByAvviso-spid
-    * test.api.pagamento.v2.pendenze.get.pendenze-spid
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-anonimo
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-byStato
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-sintassi
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-auth
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-datiAllegati
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-disabilitato
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-non-auth
-    * test.api.pagamento.v3.pendenze.get.pendenze-spid
-* Lettura del profilo utente chiamante
-    * test.api.pagamento.v1.profilo.get.get-profilo
-    * test.api.pagamento.v2.profilo.get.get-profilo
-    * test.api.pagamento.v3.profilo.get.get-profilo
-* Ricerca e consultazione di transazioni di pagamento
-    * test.api.pagamento.v1.rpp.get.transazioni-find-anonimo
-    * test.api.pagamento.v1.rpp.get.transazioni-find-applicazione
-    * test.api.pagamento.v1.rpp.get.transazioni-find-byEsito
-    * test.api.pagamento.v1.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pagamento.v1.rpp.get.transazioni-find-sintassi
-    * test.api.pagamento.v1.rpp.get.transazioni-find-spid
-    * test.api.pagamento.v1.rpp.get.transazioni-get-anonimo
-    * test.api.pagamento.v1.rpp.get.transazioni-get-applicazione
-    * test.api.pagamento.v1.rpp.get.transazioni-get-spid
-    * test.api.pagamento.v2.rpp.get.transazioni-find-anonimo
-    * test.api.pagamento.v2.rpp.get.transazioni-find-applicazione
-    * test.api.pagamento.v2.rpp.get.transazioni-find-byData
-    * test.api.pagamento.v2.rpp.get.transazioni-find-byEsito
-    * test.api.pagamento.v2.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pagamento.v2.rpp.get.transazioni-find-sintassi
-    * test.api.pagamento.v2.rpp.get.transazioni-find-spid
-    * test.api.pagamento.v2.rpp.get.transazioni-get-anonimo
-    * test.api.pagamento.v2.rpp.get.transazioni-get-applicazione
-    * test.api.pagamento.v2.rpp.get.transazioni-get-spid
-* Ricerca e consultazione delle tipologie di pendenza per pagamenti spontanei
-    * test.api.pagamento.v2.domini.get.tipipendenza-get
-* Creazione di pendenze spontanee
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-anonimo
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-applicazione
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-spid
+   cd integration-test
+   mvn test
 
-API Pendenze
-~~~~~~~~~~~~
+Per eseguire una sola area si indica la relativa classe JUnit; per eseguire una singola feature la si indica anche nella proprietà ``karate.options``:
 
-* Ricerca e consultazione pendenze
-    * test.api.pendenza.v1.pendenze.get.pendenze-anonimo
-    * test.api.pendenza.v1.pendenze.get.pendenze-find-applicazioni
-    * test.api.pendenza.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pendenza.v1.pendenze.get.pendenze-find-byStato
-    * test.api.pendenza.v1.pendenze.get.pendenze-find-sintassi
-    * test.api.pendenza.v1.pendenze.get.pendenze-get-applicazione-auth
-    * test.api.pendenza.v1.pendenze.get.pendenze-get-applicazione-disabilitato
-    * test.api.pendenza.v1.pendenze.get.pendenze-get-applicazione-non-auth
-    * test.api.pendenza.v1.pendenze.get.pendenze-spid
-    * test.api.pendenza.v2.pendenze.get.pendenza-get-avvisi
-    * test.api.pendenza.v2.pendenze.get.pendenza-get-documenti
-    * test.api.pendenza.v2.pendenze.get.pendenze-anonimo
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-byStato
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-sintassi
-    * test.api.pendenza.v2.pendenze.get.pendenze-get-applicazione-auth
-    * test.api.pendenza.v2.pendenze.get.pendenze-get-applicazione-disabilitato
-    * test.api.pendenza.v2.pendenze.get.pendenze-get-applicazione-non-auth
-    * test.api.pendenza.v2.pendenze.get.pendenze-spid
-* Creazione e modifica pendenze
-    * test.api.pendenza.v1.pendenze.patch.pendenza-patch-annullamento
-    * test.api.pendenza.v1.pendenze.patch.pendenza-patch-sintassi
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-aggiornamento
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-autorizzazione
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-campiOpzionali
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-datiAllegati
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-iuv-custom
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-monovoce
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-multivoce
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-semantica
-    * test.api.pendenza.v1.pendenze.put.pendenza-put-sintattica
-    * test.api.pendenza.v2.pendenze.patch.pendenza-patch-annullamento
-    * test.api.pendenza.v2.pendenze.patch.pendenza-patch-sintassi
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-aggiornamento
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-allegati
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-autorizzazione
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-campiOpzionali
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-contabilita
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-datiAllegati
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-documento
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-iuv-custom
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-metadata
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-monovoce
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-multibeneficiario
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-multivoce
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-pagamento-pendenza-mbt
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-pagamento-pendenza-scaduta
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-pagamento-pendenza-senza-scadenza
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-proprieta
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-proprieta-informativa-importo-avviso
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-semantica
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-sintattica
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-stampaAvviso
-    * test.api.pendenza.v2.pendenze.put.pendenza-put-tipoPendenza
-* Lettura profilo utente chiamante
-    * test.api.pendenza.v1.profilo.get.get-profilo
-    * test.api.pendenza.v2.profilo.get.get-profilo
-* Ricerca e consultazione transazioni di pagamento
-    * test.api.pendenza.v1.rpp.get.transazioni-anonimo
-    * test.api.pendenza.v1.rpp.get.transazioni-find-applicazione
-    * test.api.pendenza.v1.rpp.get.transazioni-find-byEsito
-    * test.api.pendenza.v1.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pendenza.v1.rpp.get.transazioni-find-sintassi
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-disabilitato
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-domini1-segreteria
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-domini1-star
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-domini1e2-segreteria
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-non-auth
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione-star-star
-    * test.api.pendenza.v1.rpp.get.transazioni-spid
-    * test.api.pendenza.v2.rpp.get.transazioni-anonimo
-    * test.api.pendenza.v2.rpp.get.transazioni-find-applicazione
-    * test.api.pendenza.v2.rpp.get.transazioni-find-byData
-    * test.api.pendenza.v2.rpp.get.transazioni-find-byEsito
-    * test.api.pendenza.v2.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pendenza.v2.rpp.get.transazioni-find-sintassi
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-disabilitato
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-domini1-segreteria
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-domini1-star
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-domini1e2-segreteria
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-non-auth
-    * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione-star-star
-    * test.api.pendenza.v2.rpp.get.transazioni-spid
-* Consultazione e stampa PDF di un Avviso di Pagamento
-    * test.api.pendenza.v2.avvisi.get.avvisi-get-byNumeroAvviso
+.. code-block:: bash
 
-API Ragioneria
-~~~~~~~~~~~~~~
+   mvn test -Dtest=WorkflowTest
+   mvn test -Dtest=WorkflowTest -Dkarate.options="classpath:test/workflow/send/v1/send-nav-notificato.feature"
 
-* Ricerca e consultazione dei Flussi di Rendicontazione
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find-sintassi
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-get-applicazione-dominio1
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-get-applicazione-star
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-    * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-getapplicazione-dominio2
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-disabilitato
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-dominio1
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-dominio2
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-non-auth-dominio
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-non-auth-servizio
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-applicazione-star
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1-ec
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1-star
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1-u1e2
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1-uo1
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1e2
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio1e2-ec
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-dominio2
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-none
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo-applicazione-star
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-byEscludiObsoleti
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-sintassi
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-getByDominio
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-getByDominioIdEData
-    * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-disabilitato
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-dominio1
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-dominio2
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-non-auth-dominio
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-non-auth-servizio
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-applicazione-star
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-byEscludiObsoleti
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-sintassi
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-getByDominioIdEData
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-* Ricerca e lettura domini
-    * test.api.ragioneria.v1.domini.get.domini-get-logo
-* Lettura profilo utente chiamante
-    * test.api.ragioneria.v1.profilo.get.get-profilo
-    * test.api.ragioneria.v2.profilo.get.get-profilo
-    * test.api.ragioneria.v3.profilo.get.get-profilo
-* Ricerca e consultazione delle Riconciliazioni
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get-applicazione-auth
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get-applicazione-disabilitato
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-sintassi
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get-applicazione-auth
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get-applicazione-disabilitato
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-getbyTipoRiscossione
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-sintassi
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-get-applicazione-auth
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-get-applicazione-disabilitato
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v3.riconciliazioni.get.riconciliazioni-find-sintassi
-* Registrazione delle Riconciliazioni
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-autorizzazione
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-cumulativa
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-semantica
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-senza-rpt
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-singola
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-sintassi
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-autorizzazione
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa-ricercaFlussiCaseInsensitive
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-semantica
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-senza-rpt
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-singola
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-sintassi
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-autorizzazione
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-cumulativa
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-semantica
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-senza-rpt
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-singola
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-sintassi
-* Ricerca e consultazione delle riscossioni
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byStato
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-sintassi
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-disabilitato
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-dominio1
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-dominio2
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get-applicazione-star
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byIur
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byStato
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byTipo
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-sintassi
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-disabilitato
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-dominio1
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-dominio2
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get-applicazione-star
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byIur
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byStato
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byTipo
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-sintassi
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-disabilitato
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-dominio1
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-dominio2
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-non-auth-dominio
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-non-auth-servizio
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get-applicazione-star
-* Ricerca e consultazione delle ricevute
-    * test.api.ragioneria.v3.ricevute.get.ricevute-find
-    * test.api.ragioneria.v3.ricevute.get.ricevute-find-applicazione
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-disabilitato
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-domini1-segreteria
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-domini1-star
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-domini1e2-segreteria
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-non-auth
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get-applicazione-star-star
+Altre proprietà di sistema lette dalla configurazione:
 
-Workflow di pagamento
-~~~~~~~~~~~~~~~~~~~~~
+- ``govpay.db.url``, ``govpay.db.username``, ``govpay.db.password``, ``govpay.db.driverClassName``: connessione al database di GovPay usata da alcuni test (per default ``jdbc:postgresql://localhost:5432/govpay``);
+- ``send.importoBase``: importo base delle spese di notifica SEND configurato nell'istanza sotto test (proprietà ``it.govpay.send.speseNotifica.importoBase``), ad esempio ``-Dsend.importoBase=2.00``.
 
-* Pagamenti modello 3 (Api pagoPA v1)
-    * test.workflow.modello3.v1.modello3-non-autorizzato
-    * test.workflow.modello3.v1.modello3-pagamento-annullato
-    * test.workflow.modello3.v1.modello3-pagamento-data-validita-decorsa
-    * test.workflow.modello3.v1.modello3-pagamento-duplicato
-    * test.workflow.modello3.v1.modello3-pagamento-eseguito
-    * test.workflow.modello3.v1.modello3-pagamento-importo-errato
-    * test.workflow.modello3.v1.modello3-pagamento-non-eseguito
-    * test.workflow.modello3.v1.modello3-pagamento-scaduto
-    * test.workflow.modello3.v1.modello3-pagamento-sconosciuto
-* Pagamenti modello unico (Api pagoPA v2)
-    * test.workflow.modello3.v2.check-sonda-pagopa
-    * test.workflow.modello3.v2.modello3-non-autorizzato
-    * test.workflow.modello3.v2.modello3-pagamento-duplicato
-    * test.workflow.modello3.v2.modello3-pagamento-eseguito
-    * test.workflow.modello3.v2.modello3-pagamento-non-eseguito
-    * test.workflow.modello3.v2.modello3-standin-acquisizione-rt
+I risultati sono prodotti in ``integration-test/target/surefire-reports``.
