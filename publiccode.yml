@@ -192,7 +192,7 @@ maintenance:
 name: GovPay
 platforms:
   - web
-releaseDate: '2026-11-06'
+releaseDate: '2026-11-19'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
 softwareVersion: 3.9.3.p8
