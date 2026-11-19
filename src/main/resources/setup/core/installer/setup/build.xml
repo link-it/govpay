@@ -103,7 +103,7 @@
 
        // Batch esterni
        def batchAca = properties['antinstaller_batch_aca']
-       if (batchAca) {
+       if (batchAca == 'true') {
           def acaUrl = properties['antinstaller_batch_aca_url']
           project.setUserProperty('it.govpay.batch.aca.endpoint.url', acaUrl)
        } else {
@@ -111,7 +111,7 @@
        }
 
        def batchFdr = properties['antinstaller_batch_fdr']
-       if (batchFdr) {
+       if (batchFdr == 'true') {
           def fdrUrl = properties['antinstaller_batch_fdr_url']
           project.setUserProperty('it.govpay.batch.fdr.endpoint.url', fdrUrl)
        } else {
@@ -122,7 +122,7 @@
        project.setUserProperty('it.govpay.batch.recuperoRT.endpoint.url', rtUrl ?: '')
 
        def batchIban = properties['antinstaller_batch_iban']
-       if (batchIban) {
+       if (batchIban == 'true') {
           def ibanUrl = properties['antinstaller_batch_iban_url']
           project.setUserProperty('it.govpay.batch.iban.endpoint.url', ibanUrl)
        } else {
@@ -130,11 +130,19 @@
        }
 
        def batchNotifica = properties['antinstaller_batch_notifica']
-       if (batchNotifica) {
+       if (batchNotifica == 'true') {
           def notificaUrl = properties['antinstaller_batch_notifica_url']
           project.setUserProperty('it.govpay.batch.notifica.endpoint.url', notificaUrl)
        } else {
           project.setUserProperty('it.govpay.batch.notifica.endpoint.url','')
+       }
+
+       def batchMaggioli = properties['antinstaller_batch_maggioli']
+       if (batchMaggioli == 'true') {
+          def maggioliUrl = properties['antinstaller_batch_maggioli_url']
+          project.setUserProperty('it.govpay.batch.maggioli.endpoint.url', maggioliUrl)
+       } else {
+          project.setUserProperty('it.govpay.batch.maggioli.endpoint.url','')
        }
 
        // Path dei servizi del cruscotto di backoffice, derivati dal base path delle API-Backoffice
