@@ -30,7 +30,7 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 .. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	PUT https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PUT https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
 	{
 		"idDominio":"01234567890",
 		"idTipoPendenza":"TICKET",
@@ -90,7 +90,7 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 .. code-block:: text
 	:caption: Richiesta *PUT /pendenze/{idA2A}/{id_pendenza}*
 
-	PUT https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
+	PUT https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001?stampaAvviso=true
 	{
 		"idDominio":"01234567890",
 		"idTipoPendenza":"TICKET",
@@ -148,7 +148,7 @@ Il seguente esempio mostra l'invocazione della **PATCH /pendenze/{idA2A}/{id_pen
 .. code-block:: text
 	:caption: Richiesta *PATCH /pendenze/{idA2A}/{id_pendenza}*
 
-	PATCH https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
+	PATCH https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
 	[
 	   {
 	      "op":"REPLACE",
@@ -179,7 +179,7 @@ Una pendenza **ANNULLATA** può essere riattivata con la stessa operazione, ripo
 .. code-block:: text
 	:caption: Richiesta *PATCH /pendenze/{idA2A}/{id_pendenza}*
 
-	PATCH https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
+	PATCH https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
 	[
 	   {
 	      "op":"REPLACE",
@@ -206,7 +206,7 @@ Il seguente esempio mostra l'invocazione della **GET /avvisi/{idDominio}/{numero
 .. code-block:: text
 	:caption: Richiesta *GET /avvisi/{idDominio}/{numeroAvviso}*
 	
-	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/avvisi/01234567890/310000000000000001
+	GET https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/avvisi/01234567890/310000000000000001
 	Accept:application/pdf
 	
 	HTTP/1.1 200 OK
@@ -234,7 +234,7 @@ Il seguente esempio mostra l'invocazione della **GET /pendenze/{idA2A}/{id_pende
 .. code-block:: text
 	:caption: Richiesta *GET /pendenze/{idA2A}/{idPendenza}*
 
-	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
+	GET https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/pendenze/GestPag/ABC-001
 	HTTP 200 OK
 	
 	{
@@ -391,7 +391,7 @@ Il seguente esempio mostra l'invocazione della **GET /rpp/{idDominio}/{iuv}/{ccp
 .. code-block:: text
 	:caption: Richiesta *GET /rpp/{idDominio}/{iuv}/{ccp}/rt*
 	
-	GET https://govpay.example.org/govpay/backend/api/pendenze/rs/basic/v2/rpp/01234567890/10000000000000001/100000000000902038186/rt
+	GET https://govpay.example.org/govpay-api-pendenze/rs/basic/v2/rpp/01234567890/10000000000000001/100000000000902038186/rt
 	Accept: application/pdf
 	
 	HTTP/1.1 200 OK
