@@ -7,8 +7,7 @@ L'ambiente di esecuzione di GovPay richiede la presenza di software di
 base, precedentemente installato i cui riferimenti sono:
 
 -  JVM Java 21
--  Application Server Apache Tomcat 11 (distribuzione predefinita a war),
-   oppure WildFly 28 (distribuzione ear, vedi :ref:`inst_compilazione`)
+-  Application Server Apache Tomcat 11
 
 Relativamente alla versione di RDBMS, l'attuale versione di
 GovPay consente di selezionare tra i seguenti:

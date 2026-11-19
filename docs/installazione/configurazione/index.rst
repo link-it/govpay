@@ -135,8 +135,8 @@ Nella schermata "Servizi Backoffice" si devono inserire i riferimenti alle BaseU
    Configurazione Servizi Cruscotto
 
 
--  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche (predefinito ``/govpay-console/`` su Tomcat, ``/govpay/backend/gui/backoffice/`` su WildFly)
--  **Base path API Backoffice**: BaseURL delle API-Backoffice (predefinito ``/govpay-api-backoffice`` su Tomcat, ``/govpay/backend/api/backoffice`` su WildFly)
+-  **Base path risorse statiche console**: BaseURL dove il cruscotto ricerca le risorse statiche (predefinito ``/govpay-console/``)
+-  **Base path API Backoffice**: BaseURL delle API-Backoffice (predefinito ``/govpay-api-backoffice``)
 
 File di configurazione Console Backoffice
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

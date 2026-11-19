@@ -18,8 +18,7 @@ Aggiornamento di una patch version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Nel caso di aggiornamento di una patch version, ad esempio per aggiornare la versione 3.1.1 alla 3.1.3,
-è sufficiente sostituire gli archivi dispiegati nell'Application Server: i war su Tomcat,
-l'ear su WildFly.
+è sufficiente sostituire i war dispiegati in Tomcat.
 
 Si consiglia di effettuare l'aggiornamento con l'Application Server spento.
 
@@ -184,7 +183,7 @@ L'aggiornamento alla 3.10 richiede, oltre alla sostituzione degli archivi:
   ``build-upgrade-sql.sh`` si compone insieme alle patch dei componenti del rilascio.
 - **Rimozione delle API User**: il war ``govpay-api-user`` non è più distribuito e va
   rimosso dall'application server, insieme agli eventuali riferimenti alla sua base URL
-  (``/govpay-api-user`` su Tomcat, ``/govpay/frontend/api/user`` su WildFly).
+  (``/govpay-api-user``).
 - **Recupero delle ricevute esterno**: il recupero delle RT mancanti è svolto solo da
   govpay-rt-batch, la cui URL è richiesta dall'installer
   (``it.govpay.batch.recuperoRT.endpoint.url``); va installato e configurato come

@@ -10,38 +10,29 @@ Creditore. Nella tabella seguente sono indicati sia gli indirizzi di
 base di erogazione di ciascun servizio, sia il riferimento alla
 definizione OpenAPI per la documentazione di dettaglio.
 
-Il base path dipende dalla modalità di dispiegamento: su Tomcat,
-l'installazione principale, ogni API è un war distinto e il base path è
-il nome del war (ad esempio ``/govpay-api-pendenze``); con il
-dispiegamento EAR su WildFly i base path cambiano come indicato nella
-tabella. Gli esempi della documentazione usano i base path di Tomcat.
+Ogni API è un war distinto e il base path è il nome del war (ad esempio
+``/govpay-api-pendenze``).
 
 .. list-table::
-   :widths: 20 30 25 25
+   :widths: 20 30 50
    :header-rows: 1
 
    * - API
-     - Base path (EAR)
-     - Base path (Tomcat)
+     - Base path
      - Specifica
    * - Pendenze
-     - /govpay/backend/api/pendenze
      - /govpay-api-pendenze
      - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v1/govpay-api-pendenze-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`__
    * - Ragioneria
-     - /govpay/backend/api/ragioneria
      - /govpay-api-ragioneria
      - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v1/govpay-api-ragioneria-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`__ `v3 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-ragioneria/src/main/webapp/v3/govpay-api-ragioneria.yaml>`__
    * - Backoffice
-     - /govpay/backend/api/backoffice
      - /govpay-api-backoffice
      - `v1 <https://github.com/link-it/govpay/blob/3.10.x/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`__
    * - pagoPA
-     - /govpay/frontend/api/pagopa
      - /govpay-api-pagopa
      - servizi SOAP del modello unico: `WSDL <https://github.com/link-it/govpay/blob/3.10.x/jars/pagopa-beans/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl>`__
    * - Ente Creditore
-     - definita dall'ente creditore
      - definita dall'ente creditore
      - `v1 <https://github.com/link-it/govpay/blob/3.10.x/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml>`__ `v2 <https://github.com/link-it/govpay/blob/3.10.x/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml>`__
 

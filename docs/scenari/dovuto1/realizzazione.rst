@@ -25,8 +25,7 @@ Caricamento della Pendenza
 Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
 invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API Pendenze v2 (`specifica OpenAPI <https://github.com/link-it/govpay/blob/3.10.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`__).
 
-Di seguito un esempio di invocazione. Il base path ``/govpay-api-pendenze`` è quello del dispiegamento su Tomcat;
-nel dispiegamento EAR è ``/govpay/backend/api/pendenze`` (vedi :ref:`integrazione_api`).
+Di seguito un esempio di invocazione (base path delle API in :ref:`integrazione_api`).
 
 .. code-block:: text
    :caption: Richiesta

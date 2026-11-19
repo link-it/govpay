@@ -6,8 +6,7 @@ Cruscotto
 
 Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
-- installazione su Tomcat: ``http://<hostname>:<port>/govpay-console/``
-- installazione su WildFly: ``http://<hostname>:<port>/govpay/backend/gui/backoffice``
+``http://<hostname>:<port>/govpay-console/``
 
 Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
