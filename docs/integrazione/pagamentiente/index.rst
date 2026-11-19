@@ -59,7 +59,7 @@ Esito del Pagamento
 Al ritorno sul Portale di Pagamento, al termine delle operazioni, il portale deve verificare l'effettivo esito del pagamento.
 Invocando le API Ragioneria v3 di GovPay, si ottiene la lista delle ricevute di pagamento dell'avviso individuato:
 
-   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}`
+   `GET /govpay-api-ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}`
 
 Dove:
 
@@ -73,12 +73,12 @@ Nel caso fossero presenti piu’ tentativi di pagamento il servizio ordina i ris
    Il modello unico pagoPA prevede che le ricevute siano emesse
    solo in caso di pagamento completato con successo.
 
-Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}** per scaricare la lista delle ricevute. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890** e lo iuv sia **10000000000000001**.
+Il seguente esempio mostra l'invocazione della **GET /govpay-api-ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}** per scaricare la lista delle ricevute. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890** e lo iuv sia **10000000000000001**.
 
 .. code-block:: text
-      :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}*
+      :caption: Richiesta *GET /govpay-api-ragioneria/rs/basic/v3/ricevute?idDominio={idDominio}&iuv={iuv}*
 
-      GET https://govpay.example.org/govpay/backend/api/ragioneria/rs/basic/v3/ricevute?idDominio=01234567890&iuv=10000000000000001
+      GET https://govpay.example.org/govpay-api-ragioneria/rs/basic/v3/ricevute?idDominio=01234567890&iuv=10000000000000001
 
       HTTP 200 OK
 
@@ -104,7 +104,7 @@ Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragione
 E' possibile infine stampare la versione PDF di una ricevuta utilizzando la risorsa `GET /ricevute/{idDominio}/{iuv}/{idRicevuta}` impostando l'header HTTP
 `Accept: application/pdf`
 
-   `GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}
+   `GET /govpay-api-ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}
    Accept: application/pdf|application/json`
 
 Dove:
@@ -114,12 +114,12 @@ Dove:
    - idRicevuta: identificativo della ricevuta
    - Header HTTP Accept: consente di scaricare la ricevuta in diversi formati. Per scaricare la ricevuta in formato pdf impostare il valore: ‘Accept: application/pdf’.
 
-Il seguente esempio mostra l'invocazione della **GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **100000000000902038186**.
+Il seguente esempio mostra l'invocazione della **GET /govpay-api-ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}** per scaricare la ricevuta in formato pdf. Si assume che l'ente creditore sia stato registrato con identificativo **01234567890**, lo iuv sia **10000000000000001**, l'idRicevuta sia **100000000000902038186**.
 
 .. code-block:: text
-      :caption: Richiesta *GET /govpay/backend/api/ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}*
+      :caption: Richiesta *GET /govpay-api-ragioneria/rs/basic/v3/ricevute/{idDominio}/{iuv}/{idRicevuta}*
 
-      GET https://govpay.example.org/govpay/backend/api/ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/100000000000902038186
+      GET https://govpay.example.org/govpay-api-ragioneria/rs/basic/v3/ricevute/01234567890/10000000000000001/100000000000902038186
       Accept:application/pdf
 
       HTTP/1.1 200 OK

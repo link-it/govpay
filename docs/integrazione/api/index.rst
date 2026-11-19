@@ -10,11 +10,11 @@ Creditore. Nella tabella seguente sono indicati sia gli indirizzi di
 base di erogazione di ciascun servizio, sia il riferimento alla
 definizione OpenAPI per la documentazione di dettaglio.
 
-Il base path dipende dalla modalità di dispiegamento: nella tabella è
-indicato quello del dispiegamento EAR (WildFly); su Tomcat ogni API è un
-war distinto e il base path è il nome del war (ad esempio
-``/govpay-api-pendenze``, ``/govpay-api-ragioneria``,
-``/govpay-api-backoffice``, ``/govpay-api-pagopa``).
+Il base path dipende dalla modalità di dispiegamento: su Tomcat,
+l'installazione principale, ogni API è un war distinto e il base path è
+il nome del war (ad esempio ``/govpay-api-pendenze``); con il
+dispiegamento EAR su WildFly i base path cambiano come indicato nella
+tabella. Gli esempi della documentazione usano i base path di Tomcat.
 
 .. list-table::
    :widths: 20 30 25 25
