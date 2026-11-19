@@ -63,8 +63,3 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
 
 6. Completata l’installazione di GovPay, per proseguire con l'utilizzo
    del sistema si rimanda alla sezione :ref:`govpay_console`.
-
-.. note::
-    La nuova console di backoffice (govpay-console con govpay-console-api) non fa
-    parte dei war del core: è un servizio a parte, da verificare secondo il README
-    dei due componenti (vedi :ref:`inst_componenti_aggiuntivi`).

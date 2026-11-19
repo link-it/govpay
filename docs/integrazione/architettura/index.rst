@@ -102,7 +102,6 @@ proprio repository e README (vedi :ref:`inst_componenti_aggiuntivi`):
 -  *govpay-maggioli-jppa*: notifica delle ricevute di pagamento al gateway Maggioli JPPA;
 -  *govpay-gde-api* e *govpay-stampe-api*: Giornale degli Eventi e stampa di avvisi e ricevute per i componenti esterni;
 -  *govpay-portal* e *govpay-portal-api*: portale dei pagamenti del cittadino e relative API (consultazione delle pendenze, pagamento spontaneo, avvisi e ricevute);
--  *govpay-console* e *govpay-console-api*: nuova console di backoffice, alternativa a quella inclusa nel core.
 
 Nel seguito saranno descritte le modalità di integrazione richieste ai
 sistemi applicativi dell'Ente Creditore, facendo riferimento a diverse

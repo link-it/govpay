@@ -158,11 +158,10 @@ con la seguente semantica:
 Monitoraggio dei componenti esterni
 -----------------------------------
 
-I componenti esterni (batch, govpay-gde-api, govpay-stampe-api, govpay-console-api)
+I componenti esterni (batch, govpay-gde-api, govpay-stampe-api)
 espongono lo stato tramite Spring Boot Actuator, all'indirizzo
-``/actuator/health``, sulla porta di servizio o, per govpay-console-api, sulla
-porta di management dedicata (predefinita 9090): la porta di ciascun componente
-è indicata nel suo README. È l'endpoint usato anche dagli healthcheck
+``/actuator/health``, sulla porta di servizio indicata nel README di
+ciascun componente. È l'endpoint usato anche dagli healthcheck
 dell'esempio Docker Compose (:ref:`inst_container`).
 Per i batch, inoltre, l'esito delle esecuzioni è consultabile dalla sezione
 Manutenzione della console e tramite l'API REST di ciascun batch, descritta

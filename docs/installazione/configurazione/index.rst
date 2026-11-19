@@ -418,18 +418,6 @@ Servizio di stampa in PDF di avvisi di pagamento e ricevute, usato dai component
 
 Non ha base dati e non applica autenticazione: va esposto solo sulla rete interna dei componenti.
 
-govpay-console e govpay-console-api
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Nuova console di backoffice (applicazione web) e il servizio REST che la alimenta, alternativi
-alla console inclusa nel core.
-
-- **Repository:** https://github.com/link-it/govpay-console e https://github.com/link-it/govpay-console-api
-- **Release:** https://github.com/link-it/govpay-console/releases e https://github.com/link-it/govpay-console-api/releases
-
-govpay-console-api lavora sul database di GovPay e delega ai componenti esterni stampe, Giornale
-degli Eventi ed esecuzione dei batch.
-
 govpay-portal-api
 ~~~~~~~~~~~~~~~~~
 

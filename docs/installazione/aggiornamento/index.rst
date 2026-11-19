@@ -188,6 +188,5 @@ L'aggiornamento alla 3.10 richiede, oltre alla sostituzione degli archivi:
   govpay-rt-batch, la cui URL è richiesta dall'installer
   (``it.govpay.batch.recuperoRT.endpoint.url``); va installato e configurato come
   descritto in :ref:`inst_componenti_aggiuntivi`.
-- **Componenti esterni**: gli altri batch, govpay-gde-api e la nuova console
-  (govpay-console con govpay-console-api) si installano separatamente, nelle versioni
-  previste dal rilascio.
+- **Componenti esterni**: gli altri batch e govpay-gde-api si installano separatamente,
+  nelle versioni previste dal rilascio.

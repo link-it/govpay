@@ -58,9 +58,6 @@ Come illustrato in :numref:`VisioneInsieme_fig`, lo scenario complessivo si comp
       pagamento e, se abilitata, delle ricevute;
    -  `govpay-maggioli-jppa <https://github.com/link-it/govpay-maggioli-jppa>`__:
       notifica delle ricevute di pagamento a un gateway pagamenti JPPA;
-   -  `govpay-console <https://github.com/link-it/govpay-console>`__ e
-      `govpay-console-api <https://github.com/link-it/govpay-console-api>`__:
-      nuova console di backoffice e relativo servizio REST;
    -  `govpay-gde-api <https://github.com/link-it/govpay-gde-api>`__:
       registrazione e consultazione del Giornale degli Eventi;
    -  `govpay-stampe-api <https://github.com/link-it/govpay-stampe-api>`__:

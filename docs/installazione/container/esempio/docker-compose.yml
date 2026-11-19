@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------
 # GovPay 3.10.0 - ambiente completo in container
 #
-# Tutti i componenti del rilascio: database, core, console di backoffice,
+# Tutti i componenti del rilascio: database, core (con la console di gestione),
 # microservizi e i sei batch. Le versioni delle immagini sono nel file .env
 # accanto a questo.
 #
@@ -64,7 +64,7 @@ services:
     networks: [govpay]
 
   # -------------------------------------------------------------------------
-  # Core: API di integrazione, colloquio con pagoPA, console legacy
+  # Core: API di integrazione, colloquio con pagoPA, console di gestione
   # -------------------------------------------------------------------------
   core:
     image: linkitaly/govpay:${GOVPAY_VERSION}_${GOVPAY_DB_DIALECT}
@@ -84,35 +84,6 @@ services:
       timeout: 5s
       retries: 20
       start_period: 120s
-    restart: unless-stopped
-    networks: [govpay]
-
-  # -------------------------------------------------------------------------
-  # Console di backoffice e sue API
-  # -------------------------------------------------------------------------
-  console-api:
-    image: linkitaly/govpay-console-api:${CONSOLE_API_VERSION}
-    depends_on:
-      postgres: {condition: service_healthy}
-    environment:
-      <<: *db-env
-      LOGGING_LEVEL_IT_GOVPAY: ${GOVPAY_LOG_LEVEL}
-    volumes:
-      - *log-volume
-      - *jdbc-volume
-    restart: unless-stopped
-    networks: [govpay]
-
-  console:
-    image: linkitaly/govpay-console:${CONSOLE_VERSION}
-    depends_on:
-      - console-api
-    environment:
-      # nginx inoltra /govpay-console-api/ a console-api, che risponde sulla radice
-      GOVPAY_API_BACKEND: "http://console-api:8080"
-      GOVPAY_API_BACKEND_PATH: "/"
-    ports:
-      - "${CONSOLE_HTTP_PORT}:80"
     restart: unless-stopped
     networks: [govpay]
 

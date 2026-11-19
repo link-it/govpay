@@ -10,8 +10,6 @@ Una volta completata con successo la procedura di installazione sarà possibile 
 
 Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
-.. note:: Questa sezione descrive la console inclusa nel core di GovPay. In alternativa è disponibile la nuova console di backoffice, distribuita come componente separato insieme al servizio REST che la alimenta: per installazione e configurazione si vedano i README dei repository `govpay-console <https://github.com/link-it/govpay-console>`_ e `govpay-console-api <https://github.com/link-it/govpay-console-api>`_ (vedi anche :ref:`inst_componenti_aggiuntivi`).
-
 Sono disponibili le seguenti funzionalità informative, liberamente consultabili prima dell'autenticazione:
 
 *  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato PDF

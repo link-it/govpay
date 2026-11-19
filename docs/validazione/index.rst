@@ -37,7 +37,7 @@ Il sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it
 - **SpotBugs con FindSecBugs**: analisi statica del codice sorgente per l'identificazione di vulnerabilità;
 - **OWASP Dependency-Check**: analisi delle dipendenze terza parte per vulnerabilità note;
 - **Test di integrazione**: esecuzione delle batterie di test realizzate con `Karate <https://github.com/karatelabs/karate>`_ (vedi :ref:`govpay_validazione_testsuite`), con misura della copertura del codice tramite JaCoCo;
-- **OWASP ZAP**: scansione DAST della console di gestione inclusa nel core, della nuova console di backoffice e del portale dei pagamenti in esecuzione;
+- **OWASP ZAP**: scansione DAST della console di gestione e del portale dei pagamenti in esecuzione;
 - **Accessibilità**: verifica dell'accessibilità delle stesse applicazioni web con gov-a11y;
 - **SonarCloud**: analisi della qualità del codice e delle vulnerabilità, con la copertura misurata durante i test di integrazione e attesa dell'esito del quality gate;
 - **Raccolta delle evidenze**: i report dei test Karate, di SpotBugs e di OWASP Dependency-Check sono archiviati sul sistema di Continuous Integration, distinti per branch, versione e commit verificati.
@@ -101,7 +101,7 @@ Aree della testsuite
 La directory ``api`` contiene i test delle API esposte e invocate da GovPay:
 
 - ``api/appio``: invio dell'avviso di pagamento e notifica della ricevuta tramite l'app IO;
-- ``api/backoffice``: API Backoffice; la directory ``v1`` verifica le API esposte dal core, la directory ``v2`` le API di backoffice v2 esposte dal componente `govpay-console-api <https://github.com/link-it/govpay-console-api>`_;
+- ``api/backoffice``: API Backoffice; la directory ``v1`` verifica le API esposte dal core, la directory ``v2`` contiene i test di API non incluse nel rilascio 3.10;
 - ``api/ente``: API Ente Creditore invocate da GovPay (v1 e v2): verifica di una pendenza a partire dall'avviso e notifica della ricevuta di pagamento;
 - ``api/pagopa``: API pagoPA esposte da GovPay: verifica dell'avviso, attivazione del pagamento e ricevuta, e risposta delle primitive dismesse;
 - ``api/pendenza``: API Pendenze (v1 e v2): creazione, modifica e consultazione delle pendenze, avvisi, profilo e richieste di pagamento;

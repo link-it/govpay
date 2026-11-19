@@ -30,8 +30,6 @@ rilascio:
    * - ``core``
      - GovPay: API di integrazione, colloquio con il Nodo dei Pagamenti,
        console di backoffice.
-   * - ``console`` e ``console-api``
-     - Cruscotto di gestione e le API che lo servono.
    * - ``govpay-gde``
      - Giornale degli eventi. I batch non partono finché non risponde, per non
        perdere gli eventi dei primi cicli.
@@ -114,8 +112,8 @@ Avvio
 
 Al termine dell'avvio, che richiede qualche minuto perché il core attende il
 database e i batch attendono il giornale degli eventi, i servizi sono
-raggiungibili sulle porte indicate in ``.env``: il core su
-``http://localhost:8080`` e la console su ``http://localhost:8081``.
+raggiungibili sulle porte indicate in ``.env``: il core, con la console di
+gestione, su ``http://localhost:8080``.
 
 Versioni
 --------

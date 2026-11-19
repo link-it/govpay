@@ -19,7 +19,7 @@ La documentazione di GovPay consente agli utenti di affrontare le diverse fasi d
 
 - :ref:`govpay_installazione` - Il processo di installazione e dispiegamento del prodotto nell'ambiente dell'ente
 
-- :ref:`govpay_console` - Le funzionalità disponibili nel cruscotto grafico GovPay Console incluso nel core (per la nuova console di backoffice, distribuita come componente separato, si vedano i README di `govpay-console <https://github.com/link-it/govpay-console>`_ e `govpay-console-api <https://github.com/link-it/govpay-console-api>`_), ripartite in:
+- :ref:`govpay_console` - Le funzionalità disponibili nel cruscotto grafico GovPay Console, ripartite in:
 
     * :ref:`govpay_configurazione` - Operazioni di configurazione del prodotto a carico degli amministratori del sistema
 
