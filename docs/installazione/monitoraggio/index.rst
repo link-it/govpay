@@ -14,13 +14,17 @@ Sono implementati dei check sui servizi gestiti da GovPay per
 verificarne il corretto funzionamento. Lo stato dei check è consultabile
 tramite servizi REST.
 
- GET /govpay-api-backoffice/rs/basic/v1/sonde
+.. code-block:: text
+
+   GET /govpay-api-backoffice/rs/basic/v1/sonde
 
 Il servizio restituisce una panoramica dei check attivi sul sistema e
 del loro stato attuale. Per ciascuno è possibile acquisirne il
 dettaglio:
 
- GET /govpay-api-backoffice/rs/basic/v1/sonde/{id}
+.. code-block:: text
+
+   GET /govpay-api-backoffice/rs/basic/v1/sonde/{id}
 
 dove *id* può assumere i seguenti valori:
 
@@ -73,33 +77,24 @@ compatibilità, ma dalla versione 3.10 il recupero delle ricevute è svolto dal
 componente esterno govpay-rt-batch e nessun processo del core le aggiorna: lo
 stato del recupero si controlla sul batch (vedi più avanti).
 
-in ritorno si ha un messaggio con questo formato:
+Il dettaglio di una sonda, ad esempio ``GET /govpay-api-backoffice/rs/basic/v1/sonde/check-ntfy``,
+restituisce un messaggio con questo formato:
 
-{
+.. code-block:: json
 
- "id":"check-ntfy",
-
- "nome":"Coda notifiche",
-
- "stato":"ok",
-
- "descrizioneStato":null,
-
- "durataStato":null,
-
- "sogliaWarn":"Numero di elementi accodati: 10",
-
- "sogliaError":"Numero di elementi accodati: 100",
-
- "sogliaWarnValue":10,
-
- "sogliaErrorValue":100,
-
- "dataUltimoCheck":"2025-05-21T11:46:33.104+0200",
-
- "tipo":"Coda"
-
-}
+   {
+     "id": "check-ntfy",
+     "nome": "Coda notifiche",
+     "stato": "ok",
+     "descrizioneStato": null,
+     "durataStato": null,
+     "sogliaWarn": "Numero di elementi accodati: 10",
+     "sogliaError": "Numero di elementi accodati: 100",
+     "sogliaWarnValue": 10,
+     "sogliaErrorValue": 100,
+     "dataUltimoCheck": "2025-05-21T11:46:33.104+0200",
+     "tipo": "Coda"
+   }
 
 con la seguente semantica:
 
