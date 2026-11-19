@@ -414,10 +414,10 @@ public class AvvisoPagamentoV2Utils {
 			switch (versamento.getTipoSoglia()) {
 			case ENTRO:
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
-				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
 				if(secondaLinguaScelta != null) {
-					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
-					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
+					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
 				}
 				break;
 			case OLTRE:

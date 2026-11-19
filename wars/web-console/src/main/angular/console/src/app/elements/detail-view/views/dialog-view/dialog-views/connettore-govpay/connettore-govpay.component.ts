@@ -121,6 +121,7 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
     this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
     this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].clearValidators();
+    this.fGroup.controls['versioneZip_ctrl'].clearValidators();
     // REST
     this.fGroup.controls['contenuti_ctrl'].clearValidators();
     this.fGroup.controls['url_ctrl'].clearValidators();
@@ -131,25 +132,18 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     // EMAIL
     this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
     this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
-    // EMAIL, FS
-    this.fGroup.controls['versioneZip_ctrl'].clearValidators();
     // FS
     this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
     if (this.govpayAbilitato) {
       this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required);
       this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required);
       this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].setValidators(Validators.required);
+      this.fGroup.controls['versioneZip_ctrl'].setValidators(Validators.required);
       // EMAIL
       if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_EMAIL) {
         this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]);
         if (!this._isAllegatoEmail) {
           this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]);
-        }
-      }
-      // EMAIL, FS
-      if (this.govpayAbilitato) {
-        if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_EMAIL || this.govpayModalita === UtilService.CONNETTORE_MODALITA_FILESYSTEM) {
-          this.fGroup.controls['versioneZip_ctrl'].setValidators(Validators.required);
         }
       }
       // FS
