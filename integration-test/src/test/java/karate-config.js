@@ -24,6 +24,9 @@ function() {
 			govpay_backoffice_password: 'Password1!',
 			ndpsym_url: 'http://localhost:8180/govpay-ndpsym',
 			ndpsym_user: 'ndpsym',
+			// Utenza HTTP Basic dell'API config del simulatore (/config/rs), richiesta da govpay-ndpsym 2.0 (Issue #906)
+			ndpsym_config_user: karate.properties['ndpsym.config.user'] || 'ndpsym',
+			ndpsym_config_password: karate.properties['ndpsym.config.password'] || 'ndpsym',
 			ente_api_url: 'http://localhost:8888/paServiceImpl',
 			ente_api_rendicontazioni_url: 'http://localhost:8888/enteRendicontazioni',
 			pagopa_api_url: 'http://localhost:8888/pagopa',
@@ -75,6 +78,11 @@ function() {
 	// Importo base delle spese di notifica SEND configurato nell'istanza sotto test
 	// (it.govpay.send.speseNotifica.importoBase, Issue #913): -Dsend.importoBase=2.00; null se non configurato.
 	config.sendImportoBase = karate.properties['send.importoBase'] ? Number(karate.properties['send.importoBase']) : null;
+
+	// Header delle chiamate all'API config del simulatore (Issue #906)
+	var Base64 = Java.type('java.util.Base64');
+	var ndpsymConfigCredenziali = config.ndpsym_config_user + ':' + config.ndpsym_config_password;
+	config.ndpsymConfigAutenticationHeader = { 'Authorization': 'Basic ' + Base64.getEncoder().encodeToString(ndpsymConfigCredenziali.bytes) };
 
 	return config;
 }

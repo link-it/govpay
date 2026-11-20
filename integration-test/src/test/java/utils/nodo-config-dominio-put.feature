@@ -7,6 +7,7 @@ Background:
 Scenario: 
 
 Given url ndpsym_config_url 
+And headers ndpsymConfigAutenticationHeader
 And path 'domini', idDominio
 And request dominioNdpSymPut
 When method put

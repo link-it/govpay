@@ -35,7 +35,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : '03',
@@ -69,7 +68,6 @@ Then status 200
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '0',
  versione : '1',
  segregationCode : '01',
@@ -140,7 +138,6 @@ Then status 200
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',
@@ -199,7 +196,6 @@ Then status 200
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '03',
@@ -246,7 +242,6 @@ Then status 200
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '25',
@@ -286,7 +281,6 @@ Then status 200
 * def dominioNdpSymPut =
 """
 {
- urlEC : '#(govpay_web_connector_url + "/ecsp/psp")',
  auxDigit : '3',
  versione : '1',
  segregationCode : '00',

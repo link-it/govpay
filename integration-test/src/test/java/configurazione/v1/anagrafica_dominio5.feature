@@ -115,11 +115,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 
 Given url ndpsym_config_url 
+And headers ndpsymConfigAutenticationHeader
 And path 'domini', idDominio_5
 And request 
 """
 {
-  "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
   "auxDigit": 3,
   "versione": 1,
   "segregationCode": '00',
