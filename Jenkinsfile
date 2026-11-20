@@ -93,7 +93,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly-28.0.1.Final@ndpsym tomcat_govpay_jdk25'
+        sh 'sudo systemctl start tomcat_ndpsym_jdk25 tomcat_govpay_jdk25'
         sh 'sudo docker start mailhog'
         sh 'sh ./src/main/resources/scripts/jenkins.checkimages.sh "prima della pull"'
         sh 'cd ${DOCKER_COMPOSE_DIR}/${PROJECT_VERSION} && sudo docker compose pull && cd -'

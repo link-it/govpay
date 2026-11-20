@@ -23,7 +23,8 @@ sudo systemctl stop \
   wildfly-26.1.3.Final@ndpsym \
   wildfly-28.0.1.Final@ndpsym \
   tomcat_govpay \
-  tomcat_govpay_jdk25 || true
+  tomcat_govpay_jdk25 \
+  tomcat_ndpsym_jdk25 || true
 
 sudo docker stop mailhog || true
 
