@@ -7,6 +7,7 @@ Background:
 Scenario: 
 
 Given url ndpsym_config_url 
+And headers ndpsymConfigAutenticationHeader
 And path 'stazioni', idIntermediario, idStazione
 And request stazioneNdpSymPut
 When method put

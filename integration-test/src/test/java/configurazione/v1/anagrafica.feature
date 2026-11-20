@@ -397,11 +397,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ndpsym_config_url = ndpsym_url + '/config/rs/'
 
 Given url ndpsym_config_url 
+And headers ndpsymConfigAutenticationHeader
 And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "#(govpay_web_connector_url +'/ecsp/psp')",
   "auxDigit": 3,
   "versione": 1,
   "segregationCode": '00',
