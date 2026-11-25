@@ -15,6 +15,11 @@
 # L'immagine e' quella ufficiale: le vecchie owasp/zap2docker-* sono ritirate.
 # Rete dell'host perche' i bersagli stanno su localhost; di conseguenza la porta
 # del proxy di ZAP va spostata, altrimenti sbatte contro il Tomcat sull'8080.
+#
+# Uso: jenkins.zap.sh [bersaglio ...]
+# Senza argomenti scansiona tutti i bersagli, come nella pipeline. In locale si
+# possono indicare solo quelli da riprovare (console-legacy, console-nuova,
+# portale): i report degli altri restano in target/zap.
 
 ZAP_IMAGE="${ZAP_IMAGE:-ghcr.io/zaproxy/zaproxy:stable}"
 ZAP_PORT="${ZAP_PORT:-18090}"
@@ -24,9 +29,21 @@ DOCKER_BIN="${DOCKER_BIN:-sudo docker}"
 
 OUT="$(pwd)/target/zap"
 PIANI="$(pwd)/src/main/resources/scripts/zap"
+TUTTI="console-legacy console-nuova portale"
+BERSAGLI="${*:-${TUTTI}}"
+
+# Un nome sbagliato va fermato prima di cancellare i report esistenti.
+for n in ${BERSAGLI}; do
+  if [ ! -f "${PIANI}/${n}.yaml" ]; then
+    echo "Bersaglio sconosciuto: ${n}. Disponibili: ${TUTTI}." >&2
+    exit 2
+  fi
+done
 
 mkdir -p "${OUT}"
-rm -f "${OUT}"/*
+for n in ${BERSAGLI}; do
+  rm -f "${OUT}/${n}".*
+done
 # ZAP gira come utente non root nel container e scrive in /zap/wrk.
 chmod 777 "${OUT}"
 
@@ -47,15 +64,15 @@ scansiona() {
   echo "   esito ZAP su ${nome}: ${esito}"
 }
 
-scansiona console-legacy
-scansiona console-nuova
-scansiona portale
+for n in ${BERSAGLI}; do
+  scansiona "${n}"
+done
 
-# Indice per publishHTML: i tre report sono file separati.
+# Indice per publishHTML: i report sono file separati.
 {
   echo "<!doctype html><meta charset='utf-8'><title>ZAP - GovPay ${PROJECT_VERSION}</title>"
   echo "<h1>OWASP ZAP - GovPay ${PROJECT_VERSION}</h1><ul>"
-  for n in console-legacy console-nuova portale; do
+  for n in ${TUTTI}; do
     [ -f "${OUT}/${n}.html" ] && echo "<li><a href='${n}.html'>${n}</a></li>"
   done
   echo "</ul>"
@@ -65,10 +82,15 @@ scansiona portale
 # fosse andata a termine: l'uscita a zero di un ciclo che non ha prodotto nulla
 # e' indistinguibile da un successo, ed e' il modo in cui un'analisi smette di
 # essere eseguita senza che nessuno se ne accorga.
-prodotti=$(ls "${OUT}"/*.json 2>/dev/null | wc -l)
-echo "== report prodotti: ${prodotti} su 3"
+richiesti=0
+prodotti=0
+for n in ${BERSAGLI}; do
+  richiesti=$((richiesti + 1))
+  [ -f "${OUT}/${n}.json" ] && prodotti=$((prodotti + 1))
+done
+echo "== report prodotti: ${prodotti} su ${richiesti}"
 if [ "${prodotti}" -eq 0 ]; then
-  echo "Nessuna scansione ZAP completata: controllare che i tre bersagli siano raggiungibili e che l'immagine ${ZAP_IMAGE} sia disponibile." >&2
+  echo "Nessuna scansione ZAP completata: controllare che i bersagli (${BERSAGLI}) siano raggiungibili e che l'immagine ${ZAP_IMAGE} sia disponibile." >&2
   exit 1
 fi
 
