@@ -24,6 +24,30 @@ env:
     progressToStdout: true
 
 jobs:
+  # Le segnalazioni verificate e accettate si dichiarano qui, una per volta e
+  # con il motivo nel commento: servono a tenere il report leggibile, non a
+  # nascondere i problemi. Il job va prima delle scansioni, perche' agisce
+  # sugli alert man mano che vengono sollevati.
+  #
+  # Information in Browser localStorage (120000, gia' Informational): accettato.
+  # "govpay_cart" e' il carrello, che deve sopravvivere al ritorno dal checkout
+  # pagoPA; contiene solo i campi di CART_ITEM_FIELDS (pay.service.ts: avviso,
+  # causale, importo, scadenze, ente), senza i dati del debitore.
+  - type: alertFilter
+    alertFilters:
+      # Timestamp Disclosure: 1831565813 e' 0x6D2B79F5, la costante del generatore
+      # pseudo-casuale Mulberry32 di SurveyJS (survey-core), non una data. Filtro sul valore
+      # perche' il nome del chunk cambia a ogni build.
+      - ruleId: 10096
+        newRisk: "False Positive"
+        evidence: "1831565813"
+      # Cookie No HttpOnly Flag su XSRF-TOKEN: accettato. Il cookie deve essere
+      # leggibile da JavaScript, perche' Angular ne rimanda il valore nell'header
+      # X-XSRF-TOKEN (protezione CSRF double submit di govpay-portal-api).
+      - ruleId: 10010
+        newRisk: "Info"
+        parameter: "XSRF-TOKEN"
+
   - type: passiveScan-config
     parameters:
       maxAlertsPerRule: 10
@@ -44,14 +68,6 @@ jobs:
   - type: passiveScan-wait
     parameters:
       maxDuration: 5
-
-  # Le segnalazioni verificate e accettate si dichiarano qui, una per volta e
-  # con il motivo nel commento: servono a tenere il report leggibile, non a
-  # nascondere i problemi.
-  # - type: alertFilter
-  #   alertFilters:
-  #     - ruleId: 10096          # Timestamp Disclosure: falsi positivi su id numerici
-  #       newRisk: "False Positive"
 
   - type: report
     parameters:
