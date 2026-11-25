@@ -24,6 +24,20 @@ env:
     progressToStdout: true
 
 jobs:
+  # Le segnalazioni verificate e accettate si dichiarano qui, una per volta e
+  # con il motivo nel commento: servono a tenere il report leggibile, non a
+  # nascondere i problemi. Il job va prima delle scansioni, perche' agisce
+  # sugli alert man mano che vengono sollevati.
+  - type: alertFilter
+    alertFilters:
+      # Timestamp Disclosure: i valori in vendor.bundle.js sono costanti degli
+      # algoritmi di hash di crypto-js (SHA-1 0x5A827999 e 0x6ED9EBA1, valore
+      # iniziale MD5/SHA-1 0x67452301, RIPEMD-160 0x6D703EF3 e 0x50A28BE6), non date.
+      - ruleId: 10096
+        newRisk: "False Positive"
+        url: ".*/vendor\\.bundle\\.js"
+        urlRegex: true
+
   - type: passiveScan-config
     parameters:
       maxAlertsPerRule: 10
@@ -44,14 +58,6 @@ jobs:
   - type: passiveScan-wait
     parameters:
       maxDuration: 5
-
-  # Le segnalazioni verificate e accettate si dichiarano qui, una per volta e
-  # con il motivo nel commento: servono a tenere il report leggibile, non a
-  # nascondere i problemi.
-  # - type: alertFilter
-  #   alertFilters:
-  #     - ruleId: 10096          # Timestamp Disclosure: falsi positivi su id numerici
-  #       newRisk: "False Positive"
 
   - type: report
     parameters:

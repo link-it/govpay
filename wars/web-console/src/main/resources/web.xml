@@ -2,6 +2,21 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<display-name>govpay-web-console</display-name>
 
+	<!-- header di sicurezza (CSP, X-Frame-Options, X-Content-Type-Options) su tutte le risposte -->
+	<filter>
+		<filter-name>SecurityHeadersFilter</filter-name>
+		<filter-class>it.govpay.web.console.filter.SecurityHeadersFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>SecurityHeadersFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<!-- anche sulla pagina di errore 404, che restituisce index.html -->
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
 	<filter>
 		<filter-name>Html5RoutingFilter</filter-name>
 		<filter-class>it.govpay.web.console.filter.Html5RoutingFilter</filter-class>
