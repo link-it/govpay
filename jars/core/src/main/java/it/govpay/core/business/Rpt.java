@@ -57,6 +57,10 @@ public class Rpt {
 			RptFilter filter = rptBD.newFilter();
 			filter.setCodDominio(codDominio);
 			filter.setIuv(iuv);
+			// Ricerca esatta: con il LIKE la SELECT FOR UPDATE non usa l'indice (iuv, ccp, cod_dominio)
+			// e su MySQL blocca tramite idx_rpt_stato le RPT pendenti degli altri IUV del dominio,
+			// andando in deadlock con l'acquisizione concorrente delle loro RT.
+			filter.setSearchModeEquals(true);
 			filter.setStato(it.govpay.model.Rpt.getStatiPendenti());
 			filter.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 
