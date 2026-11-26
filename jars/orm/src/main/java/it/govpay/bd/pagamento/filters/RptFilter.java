@@ -49,6 +49,7 @@ public class RptFilter extends AbstractFilter {
 
 	private List<Long> idVersamento;
 	private String iuv;
+	private boolean searchModeEquals = false;
 	private String ccp;
 	private String codDominio;
 	private List<String> idDomini;
@@ -101,7 +102,11 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(RPT.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				if(this.searchModeEquals) {
+					newExpression.equals(RPT.model().IUV, this.iuv);
+				} else {
+					newExpression.ilike(RPT.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				}
 				addAnd = true;
 			}
 			
@@ -353,7 +358,11 @@ public class RptFilter extends AbstractFilter {
 			}
 
 			if(this.iuv != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+				if(this.searchModeEquals) {
+					sqlQueryObject.addWhereCondition(true, converter.toColumn(model.IUV, true) + " = ? ");
+				} else {
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+				}
 			}
 			
 			if(this.ccp != null){
@@ -578,8 +587,8 @@ public class RptFilter extends AbstractFilter {
 			// donothing
 		}
 
-		if(this.iuv != null){
-			// donothing
+		if(this.iuv != null && this.searchModeEquals){
+			lst.add(this.iuv);
 		}
 		
 		if(this.ccp != null){
@@ -691,6 +700,14 @@ public class RptFilter extends AbstractFilter {
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
 	}
 
 	public List<String> getIdDomini() {

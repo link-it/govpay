@@ -382,7 +382,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
-			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
+			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), codDominio, e), response);
 			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
@@ -1262,7 +1262,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
-			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
+			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, e.getMessage(), codDominio, e), response);
 			String faultDescription = response.getFault().getDescription() == null ? FAULT_MSG_NESSUNA_DESCRIZIONE : response.getFault().getDescription(); 
 			MessaggioDiagnosticoUtils.logMessaggioDiagnostico(log, ctx, MessaggioDiagnosticoCostanti.MSG_DIAGNOSTICO_RT_RICEZIONE_KO, response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
