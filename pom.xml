@@ -233,6 +233,8 @@
         <barcode4j.version>2.1</barcode4j.version>
         <!-- junit, test dei moduli jars -->
         <junit-jupiter.version>5.12.2</junit-jupiter.version>
+        <!-- pdfbox, lettura dei PDF nei test di jars/stampe -->
+        <pdfbox.version>3.0.8</pdfbox.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <!-- ant version -->
         <ant.version>1.10.18</ant.version><!-- CVE-2026-78254 -->
