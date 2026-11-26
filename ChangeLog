@@ -1,3 +1,9 @@
+2026-11-26  Giuliano Pintori <pintori@link.it>
+
+        * Issue #920 Su MySQL alcune ricevute venivano rifiutate con PAA_SYSTEM_ERROR ("Deadlock found when trying to get lock") quando sullo stesso dominio arrivava in contemporanea una paGetPayment/paGetPaymentV2 di un altro IUV. Rpt.annullaRPTPendenti cercava lo IUV con LIKE '%iuv%' in SELECT FOR UPDATE: MySQL non poteva usare l'indice (iuv, ccp, cod_dominio), scorreva idx_rpt_stato e bloccava le RPT pendenti di tutto il dominio, prendendo i lock in ordine opposto rispetto all'aggiornamento di stato fatto da paSendRTV2.
+        Ora annullaRPTPendenti cerca lo IUV per uguaglianza (nuova opzione searchModeEquals di RptFilter, come in FrFilter) e blocca solo le RPT di quello IUV; evita anche di annullare RPT di IUV diversi che contengono quello cercato. Nel fault PAA_SYSTEM_ERROR di paSendRT e paSendRTV2 il messaggio va ora in description e il codice dominio in id (erano invertiti).
+        Verifica: deadlock riprodotto su MySQL 8.4 con due sessioni in READ_COMMITTED (SELECT FOR UPDATE con LIKE su uno IUV e UPDATE di stato su un'altra RPT pendente), assente con la ricerca esatta.
+
 2026-11-12  Giuliano Pintori <pintori@link.it>
 
         * Issue #911 Una ricevuta non veniva acquisita se il pagamento era rendicontato in un flusso acquisito in piu' revisioni prima della ricevuta: ogni revisione salva la propria rendicontazione ANOMALA senza pagamento, e all'arrivo della ricevuta RtUtils.checkEsistenzaRendicontazioneAnomalaPerIlPagamento ne cercava una sola. Con due righe la ricerca falliva, la transazione veniva annullata e paSendRTV2 (e il recupero delle RT) rispondeva PAA_SYSTEM_ERROR a ogni tentativo.
