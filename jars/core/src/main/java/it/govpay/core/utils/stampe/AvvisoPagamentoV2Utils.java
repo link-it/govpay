@@ -256,9 +256,12 @@ public class AvvisoPagamentoV2Utils {
 				
 				RataAvviso rata = getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza);
 				
-				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
-				if(secondaLinguaScelta != null)
-					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PRIMA_RATA));
+				// con la data nascosta (#918) resta il nome della rata impostato da getRata
+				if(rata.getData() != null) {
+					rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
+					if(secondaLinguaScelta != null)
+						rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PRIMA_RATA));
+				}
 				
 				input.getEtichette().getItaliano().setEntro(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ENTRO_IL));
 				
@@ -335,7 +338,9 @@ public class AvvisoPagamentoV2Utils {
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
 			RataAvviso rataSx = getRata(v1, input, secondaLinguaScelta, sdfDataScadenza);
 			RataAvviso rataDx = getRata(v2, input, secondaLinguaScelta, sdfDataScadenza);
-			
+			rimuoviEtichetteSenzaData(v1, rataSx);
+			rimuoviEtichetteSenzaData(v2, rataDx);
+
 			if(v1.getNumeroRata() != null && v2.getNumeroRata() != null) {
 				// Titolo della pagina con 2 Rate
 				String titoloRateIta = getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ELENCO_RATE_2, v1.getNumeroRata(), v2.getNumeroRata());
@@ -361,7 +366,8 @@ public class AvvisoPagamentoV2Utils {
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
 			RataAvviso rataSx = getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza);
-			
+			rimuoviEtichetteSenzaData(versamento, rataSx);
+
 			if(versamento.getNumeroRata() != null) {
 				// Titolo della pagina con 2 Rate
 				String titoloRateIta = getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ELENCO_RATE_1, versamento.getNumeroRata());
@@ -405,7 +411,7 @@ public class AvvisoPagamentoV2Utils {
 			
 			rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
 			if(secondaLinguaScelta != null)
-				rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
+				rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
 		}
 
 		boolean addDataValidita = true;
@@ -499,6 +505,12 @@ public class AvvisoPagamentoV2Utils {
 
 		if(addDataValidita) {
 			impostaDataScadenza(versamento, sdfDataScadenza, rata);
+
+			// Issue #918: con la data nascosta (#898) le etichette "... entro il" resterebbero
+			// senza data; si stampa solo il nome della rata, come nell'avviso V1.
+			if(rata.getData() == null) {
+				impostaEtichetteSenzaData(versamento, secondaLinguaScelta, rata);
+			}
 		}
 		
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
@@ -506,6 +518,32 @@ public class AvvisoPagamentoV2Utils {
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 
 		return rata;
+	}
+
+	private static void impostaEtichetteSenzaData(it.govpay.bd.model.Versamento versamento, LinguaSecondaria secondaLinguaScelta, RataAvviso rata) throws UtilsException {
+		String rataUnica = getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA);
+		String rataUnicaTra = secondaLinguaScelta != null ? getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA) : null;
+
+		if(versamento.getNumeroRata() != null) {
+			rata.setScadenza(rata.getNumeroRata());
+			rata.setScadenzaTra(rata.getNumeroRataTra());
+			rata.setScadenzaUnica(rataUnica);
+			rata.setScadenzaUnicaTra(rataUnicaTra);
+		} else {
+			rata.setScadenza(rataUnica);
+			rata.setScadenzaTra(rataUnicaTra);
+		}
+	}
+
+	/**
+	 * Issue #918: nella pagina con due rate il template stampa gia' il numero della rata;
+	 * con la data nascosta l'etichetta della scadenza resta vuota.
+	 */
+	private static void rimuoviEtichetteSenzaData(it.govpay.bd.model.Versamento versamento, RataAvviso rata) {
+		if(rata.getData() == null && versamento.getTipoSoglia() == null) {
+			rata.setScadenza(null);
+			rata.setScadenzaTra(null);
+		}
 	}
 
 	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza, RataAvviso rata) {

@@ -62,6 +62,7 @@ public class LabelAvvisiProperties {
 	public static final String LABEL_NOTA_PRIMA_RATA = "nota_prima_rata";
 	public static final String LABEL_NOTA_RATA_UNICA = "nota_rata_unica";
 	public static final String LABEL_RATA_UNICA_ENTRO_IL = "rata_unica_entro_il";
+	public static final String LABEL_RATA_UNICA = "rata_unica";
 	public static final String LABEL_RATA_ENTRO_IL = "rata_entro_il";
 	public static final String LABEL_PRIMA_RATA = "prima_rata";
 	public static final String LABEL_ELENCO_RATE_1 = "elenco_rate_1";

@@ -1,3 +1,8 @@
+2026-11-26  Giuliano Pintori <pintori@link.it>
+
+        * Issue #918 Avviso bilingue con la data di scadenza nascosta (#898): restavano le etichette pensate per precedere la data ("Rata 1 entro il · Obrok 1 do", "Rata UNICA entro il") e nel bollettino postale il numero della rata compariva due volte ("Rata 2 Rata 2 entro il"). Ora, senza data, si stampa solo il nome della rata ("Rata 1 · Obrok 1", "Rata UNICA · Enkratni obrok"), come gia' nell'avviso solo italiano; nella pagina con due rate e nel bollettino resta il numero della rata gia' stampato dal template. Nuova etichetta rata_unica in avvisi.properties (it, sl, de): se un avvisi.properties esterno non la definisce vale quella interna. Corretta anche l'assegnazione che, per le rate, sovrascriveva la traduzione della scadenza con quella della rata unica ("Enkratni obrok do"), visibile solo con la data nascosta. Gli avvisi con la data non cambiano.
+        Verifica: nuovo test AvvisoPagamentoV2DataNascostaTest nel modulo stampe (PDFBox in scope test), 8 casi passati: rata unica, 2 e 3 rate, con e senza bollettino postale, con la data nascosta e con la data. PDF degli stessi casi prima e dopo la correzione confrontati a vista e, con la data, identici pixel per pixel.
+
 2026-11-16  Giuliano Pintori <pintori@link.it>
 
         * Issue #914 La vista v_versamenti espone anche le colonne send_abilitato, send_importo_totale, send_data_aggiornamento e send_nav, mappate in VistaVersamento: gli elenchi delle pendenze (API Pendenze v2, Backoffice, console), che leggono dalla vista, riportavano sendAbilitato sempre false e gli altri dati SEND vuoti; il dettaglio, che legge dalla tabella, era gia' corretto. Vista aggiornata in gov_pay.sql e nella patch 3.10.0 dei cinque dialetti.
