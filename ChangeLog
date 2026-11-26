@@ -1,3 +1,7 @@
+2026-11-26  Giuliano Pintori <pintori@link.it>
+
+        * Avanzamento versione 3.9.3.p9.
+
 2026-11-12  Giuliano Pintori <pintori@link.it>
 
         * Issue #911 Una ricevuta non veniva acquisita se il pagamento era rendicontato in un flusso acquisito in piu' revisioni prima della ricevuta: ogni revisione salva la propria rendicontazione ANOMALA senza pagamento, e all'arrivo della ricevuta RtUtils.checkEsistenzaRendicontazioneAnomalaPerIlPagamento ne cercava una sola. Con due righe la ricerca falliva, la transazione veniva annullata e paSendRTV2 (e il recupero delle RT) rispondeva PAA_SYSTEM_ERROR a ogni tentativo.
